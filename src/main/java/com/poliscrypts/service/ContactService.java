@@ -60,9 +60,7 @@ public class ContactService {
 	public Contact findContactById(Long id) {
 
 		Contact contact = contactRepository.findById(id).orElse(null);
-		if (contact != null) {
-			contactRepository.delete(contact);
-		} else {
+		if (contact == null) {
 			throw new EntityNotFoundException("Ce contact n'existe pas");
 		}
 		return contact;

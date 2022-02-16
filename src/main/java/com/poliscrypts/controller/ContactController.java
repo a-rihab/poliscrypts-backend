@@ -17,9 +17,6 @@ import com.poliscrypts.model.Contact;
 import com.poliscrypts.service.ContactService;
 import com.poliscrypts.util.PageContent;
 
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
 @RestController
 @RequestMapping("/api/contact")
 public class ContactController {

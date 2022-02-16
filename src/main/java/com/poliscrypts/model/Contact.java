@@ -1,5 +1,7 @@
 package com.poliscrypts.model;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -7,6 +9,8 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 
 import com.poliscrypts.util.ContactType;
 
@@ -14,10 +18,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
+@Entity
 public class Contact {
 
 	@Id
@@ -36,5 +40,9 @@ public class Contact {
 	private ContactType type;
 
 	private int tva;
+
+	@OneToMany
+	@JoinColumn(name = "fk_contact_id")
+	private List<Entreprise> entreprises;
 
 }
