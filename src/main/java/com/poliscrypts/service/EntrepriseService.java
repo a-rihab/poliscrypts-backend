@@ -1,0 +1,82 @@
+package com.poliscrypts.service;
+
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+
+import com.poliscrypts.exception.EntityNotFoundException;
+import com.poliscrypts.model.Entreprise;
+import com.poliscrypts.repository.EntrepriseRepository;
+import com.poliscrypts.util.PageContent;
+
+@Service
+public class EntrepriseService {
+
+	@Autowired
+	private EntrepriseRepository entrepriseRepository;
+
+	public Entreprise createEntreprise(Entreprise entreprise) {
+		return entrepriseRepository.save(entreprise);
+	}
+
+	public Entreprise updateEntreprise(Long id, Entreprise entreprise) {
+
+		Optional<Entreprise> optional = entrepriseRepository.findById(id);
+		Entreprise oldEntreprise = null;
+
+		if (optional.isPresent()) {
+			oldEntreprise = optional.get();
+			entreprise.setId(oldEntreprise.getId());
+		} else {
+			throw new EntityNotFoundException("Impossible de modifier ce entreprise");
+		}
+
+		return entrepriseRepository.save(entreprise);
+	}
+
+	public PageContent<Entreprise> getAllContacs(Integer page, Integer limit, String sort, String dir) {
+
+		Pageable paging = null;
+
+		if (dir.equals("asc"))
+			paging = PageRequest.of(page, limit, Sort.by(sort).ascending());
+		else
+			paging = PageRequest.of(page, limit, Sort.by(sort).descending());
+
+		Page<Entreprise> entreprises = entrepriseRepository.findAll(paging);
+
+		PageContent<Entreprise> pageContent = new PageContent<Entreprise>();
+		pageContent.setContent(entreprises.getContent());
+		pageContent.setTotalElements(entreprises.getTotalElements());
+
+		return pageContent;
+	}
+
+	public Entreprise findEntrepriseById(Long id) {
+
+		Entreprise entreprise = entrepriseRepository.findById(id).orElse(null);
+		if (entreprise == null) {
+			throw new EntityNotFoundException("Cette entreprise n'existe pas");
+		}
+		return entreprise;
+	}
+
+	public String deleteEntreprise(Long id) {
+		Entreprise entreprise = entrepriseRepository.findById(id).orElse(null);
+		String message = "";
+
+		if (entreprise != null) {
+			entrepriseRepository.delete(entreprise);
+			message = "Entreprise with id " + id + " has been deleting succussfully";
+		} else {
+			throw new EntityNotFoundException("Impossible de supprimer cette entreprise");
+		}
+		return message;
+	}
+
+}
