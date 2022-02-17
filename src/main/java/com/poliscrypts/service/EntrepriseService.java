@@ -26,15 +26,9 @@ public class EntrepriseService {
 
 	public Entreprise updateEntreprise(Long id, Entreprise entreprise) {
 
-		Optional<Entreprise> optional = entrepriseRepository.findById(id);
-		Entreprise oldEntreprise = null;
-
-		if (optional.isPresent()) {
-			oldEntreprise = optional.get();
-			entreprise.setId(oldEntreprise.getId());
-		} else {
-			throw new EntityNotFoundException("Impossible de modifier ce entreprise");
-		}
+		Entreprise oldEntreprise = entrepriseRepository.findById(id)
+				.orElseThrow(() -> new EntityNotFoundException("Impossible de modifier ce entreprise"));
+		entreprise.setId(oldEntreprise.getId());
 
 		return entrepriseRepository.save(entreprise);
 	}
@@ -58,25 +52,16 @@ public class EntrepriseService {
 	}
 
 	public Entreprise findEntrepriseById(Long id) {
-
-		Entreprise entreprise = entrepriseRepository.findById(id).orElse(null);
-		if (entreprise == null) {
-			throw new EntityNotFoundException("Cette entreprise n'existe pas");
-		}
-		return entreprise;
+		return entrepriseRepository.findById(id)
+				.orElseThrow(() -> new EntityNotFoundException("Cette entreprise n'existe pas"));
 	}
 
 	public String deleteEntreprise(Long id) {
-		Entreprise entreprise = entrepriseRepository.findById(id).orElse(null);
-		String message = "";
+		Entreprise entreprise = entrepriseRepository.findById(id)
+				.orElseThrow(() -> new EntityNotFoundException("Impossible de supprimer cette entreprise"));
+		entrepriseRepository.delete(entreprise);
 
-		if (entreprise != null) {
-			entrepriseRepository.delete(entreprise);
-			message = "Entreprise with id " + id + " has been deleting succussfully";
-		} else {
-			throw new EntityNotFoundException("Impossible de supprimer cette entreprise");
-		}
-		return message;
+		return "Entreprise with id " + id + " has been deleting succussfully";
 	}
 
 }

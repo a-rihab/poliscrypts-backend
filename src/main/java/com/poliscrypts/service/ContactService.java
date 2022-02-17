@@ -1,7 +1,5 @@
 package com.poliscrypts.service;
 
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -26,15 +24,9 @@ public class ContactService {
 
 	public Contact updateContact(Long id, Contact contact) {
 
-		Optional<Contact> optional = contactRepository.findById(id);
-		Contact oldContact = null;
-
-		if (optional.isPresent()) {
-			oldContact = optional.get();
-			contact.setId(oldContact.getId());
-		} else {
-			throw new EntityNotFoundException("Impossible de modifier ce contact");
-		}
+		Contact oldContact = contactRepository.findById(id)
+				.orElseThrow(() -> new EntityNotFoundException("Impossible de modifier ce contact"));
+		contact.setId(oldContact.getId());
 
 		return contactRepository.save(contact);
 	}
@@ -58,25 +50,17 @@ public class ContactService {
 	}
 
 	public Contact findContactById(Long id) {
-
-		Contact contact = contactRepository.findById(id).orElse(null);
-		if (contact == null) {
-			throw new EntityNotFoundException("Ce contact n'existe pas");
-		}
-		return contact;
+		return contactRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Ce contact n'existe pas"));
 	}
 
 	public String deleteContact(Long id) {
-		Contact contact = contactRepository.findById(id).orElse(null);
-		String message = "";
+		Contact contact = contactRepository.findById(id)
+				.orElseThrow(() -> new EntityNotFoundException("Impossible de supprimer ce contact"));
 
-		if (contact != null) {
-			contactRepository.delete(contact);
-			message = "Contact with id " + id + " has been deleting succussfully";
-		} else {
-			throw new EntityNotFoundException("Impossible de supprimer ce contact");
-		}
-		return message;
+		contactRepository.delete(contact);
+
+		return "Contact with id " + id + " has been deleting succussfully";
+
 	}
 
 }
