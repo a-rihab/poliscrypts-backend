@@ -16,6 +16,7 @@ public class ExceptionResponse {
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss")
 	private Date timestamp;
 	private String message;
+	private int status;
 	private String details;
 
 }

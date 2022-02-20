@@ -17,14 +17,16 @@ public class GlobalExceptionHandletController {
 
 	@ExceptionHandler(EntityNotFoundException.class)
 	public ResponseEntity<Object> handleEntityNotFoundException(EntityNotFoundException ex, WebRequest req) {
-		ExceptionResponse ced = new ExceptionResponse(new Date(), ex.getMessage(), req.getDescription(false));
+		ExceptionResponse ced = new ExceptionResponse(new Date(), ex.getMessage(), HttpStatus.NOT_FOUND.value(),
+				req.getDescription(false));
 
 		return new ResponseEntity<Object>(ced, HttpStatus.NOT_FOUND);
 	}
 
 	@ExceptionHandler(GlobalException.class)
 	public ResponseEntity<Object> handleCustomException(GlobalException ex, WebRequest req) {
-		ExceptionResponse ced = new ExceptionResponse(new Date(), ex.getMessage(), req.getDescription(false));
+		ExceptionResponse ced = new ExceptionResponse(new Date(), ex.getMessage(),
+				HttpStatus.INTERNAL_SERVER_ERROR.value(), req.getDescription(false));
 
 		return new ResponseEntity<Object>(ced, HttpStatus.INTERNAL_SERVER_ERROR);
 	}

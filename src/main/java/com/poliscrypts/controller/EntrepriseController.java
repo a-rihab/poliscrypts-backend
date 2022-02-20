@@ -3,6 +3,7 @@ package com.poliscrypts.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,6 +37,8 @@ public class EntrepriseController {
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "201", description = "Entreprise has been created successfully !", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Entreprise.class))),
 			@ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content) })
+	
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@PostMapping
 	public ResponseEntity<Entreprise> saveEntreprise(
 			@Parameter(description = "Provide a entreprise payload", required = true) @RequestBody Entreprise entreprise) {
@@ -46,10 +49,13 @@ public class EntrepriseController {
 
 	}
 
+	
 	@Operation(summary = "Get all entreprises ")
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Retrieve all resources", content = {
 			@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Entreprise.class))) }),
 			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
+	
+	@PreAuthorize("hasRole('ROLE_ADMIN')  or hasRole('ROLE_USER')")
 	@GetMapping
 	public ResponseEntity<PageContent<Entreprise>> getAllEntreprises(
 			@Parameter(description = "Provide a page number") @RequestParam(defaultValue = "0") Integer page,
@@ -67,6 +73,8 @@ public class EntrepriseController {
 					@Content(mediaType = "application/json", schema = @Schema(implementation = Entreprise.class)) }),
 			@ApiResponse(responseCode = "400", description = "Invalid id supplied", content = @Content),
 			@ApiResponse(responseCode = "404", description = "Entreprise not found", content = @Content) })
+	
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@GetMapping("/{id}")
 	public ResponseEntity<Entreprise> getEntrepriseById(
 			@Parameter(description = "Provide a entreprise id", required = true) @PathVariable Long id) {
@@ -81,6 +89,8 @@ public class EntrepriseController {
 					@Content(mediaType = "application/json", schema = @Schema(implementation = Entreprise.class)) }),
 			@ApiResponse(responseCode = "400", description = "Invalid id supplied", content = @Content),
 			@ApiResponse(responseCode = "404", description = "Entreprise not found", content = @Content) })
+	
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@PutMapping("/{id}")
 	public ResponseEntity<Entreprise> updateEntreprise(
 			@Parameter(description = "Provide a entreprise id", required = true) @PathVariable Long id,
@@ -98,6 +108,8 @@ public class EntrepriseController {
 					@Content(mediaType = "application/json", schema = @Schema(implementation = Entreprise.class)) }),
 			@ApiResponse(responseCode = "400", description = "Invalid id supplied", content = @Content),
 			@ApiResponse(responseCode = "404", description = "Entreprise not found", content = @Content) })
+	
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@DeleteMapping("/{id}")
 	public ResponseEntity<String> deleteEntreprise(
 			@Parameter(description = "Provide a entreprise id", required = true) @PathVariable Long id) {
