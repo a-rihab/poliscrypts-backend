@@ -1,7 +1,5 @@
 package com.poliscrypts.security;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.log;
-
 import java.io.IOException;
 
 import javax.servlet.FilterChain;

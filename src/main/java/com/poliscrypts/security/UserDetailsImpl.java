@@ -34,7 +34,7 @@ public class UserDetailsImpl implements UserDetails {
 		List<GrantedAuthority> authorities = new ArrayList<>();
 
 		// Extract list of roles (ROLE_name)
-		this.user.getRoleList().forEach(r -> {
+		this.user.getRoles().forEach(r -> {
 			GrantedAuthority authority = new SimpleGrantedAuthority(r);
 			authorities.add(authority);
 		});
