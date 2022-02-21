@@ -1,7 +1,5 @@
 package com.poliscrypts.service;
 
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -33,7 +31,7 @@ public class EntrepriseService {
 		return entrepriseRepository.save(entreprise);
 	}
 
-	public PageContent<Entreprise> getAllContacs(Integer page, Integer limit, String sort, String dir) {
+	public PageContent<Entreprise> getAllEntreprises(Integer page, Integer limit, String sort, String dir) {
 
 		Pageable paging = null;
 
@@ -43,6 +41,25 @@ public class EntrepriseService {
 			paging = PageRequest.of(page, limit, Sort.by(sort).descending());
 
 		Page<Entreprise> entreprises = entrepriseRepository.findAll(paging);
+
+		PageContent<Entreprise> pageContent = new PageContent<Entreprise>();
+		pageContent.setContent(entreprises.getContent());
+		pageContent.setTotalElements(entreprises.getTotalElements());
+
+		return pageContent;
+	}
+
+	public PageContent<Entreprise> findAllEntreprisesByAddress(String address, Integer page, Integer limit, String sort,
+			String dir) {
+
+		Pageable paging = null;
+
+		if (dir.equals("asc"))
+			paging = PageRequest.of(page, limit, Sort.by(sort).ascending());
+		else
+			paging = PageRequest.of(page, limit, Sort.by(sort).descending());
+
+		Page<Entreprise> entreprises = entrepriseRepository.findByAddressContainingIgnoreCase(address, paging);
 
 		PageContent<Entreprise> pageContent = new PageContent<Entreprise>();
 		pageContent.setContent(entreprises.getContent());

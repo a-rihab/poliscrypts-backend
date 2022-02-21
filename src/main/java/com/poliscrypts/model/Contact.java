@@ -40,14 +40,13 @@ public class Contact {
 	@NotBlank(message = "Veuillez saisir une address !")
 	private String address;
 
-	@NotBlank(message = "Veuillez selectionner le type !")
 	@Enumerated(EnumType.STRING)
 	private ContactType type;
 
 	private int tva;
 
 	@OneToMany
-	@JoinColumn(name = "fk_contact_id")
+	@JoinColumn(name = "contact_id")
 	private List<Entreprise> entreprises;
 
 }

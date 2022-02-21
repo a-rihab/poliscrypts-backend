@@ -49,6 +49,27 @@ public class ContactService {
 		return pageContent;
 	}
 
+	public PageContent<Contact> findAllEntreprisesBySearch(String search, Integer page, Integer limit, String sort,
+			String dir) {
+
+		Pageable paging = null;
+
+		if (dir.equals("asc"))
+			paging = PageRequest.of(page, limit, Sort.by(sort).ascending());
+		else
+			paging = PageRequest.of(page, limit, Sort.by(sort).descending());
+
+		Page<Contact> contacts = contactRepository
+				.findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCaseOrAddressContainingIgnoreCase(search,
+						search, search, paging);
+
+		PageContent<Contact> pageContent = new PageContent<Contact>();
+		pageContent.setContent(contacts.getContent());
+		pageContent.setTotalElements(contacts.getTotalElements());
+
+		return pageContent;
+	}
+
 	public Contact findContactById(Long id) {
 		return contactRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Ce contact n'existe pas"));
 	}
