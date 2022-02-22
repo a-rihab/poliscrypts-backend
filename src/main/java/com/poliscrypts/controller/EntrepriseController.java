@@ -160,7 +160,7 @@ public class EntrepriseController {
 
 			}
 
-			updatedEntreprise = entrepriseService.createEntreprise(entreprise);
+			updatedEntreprise = entrepriseService.updateEntreprise(id, entreprise);
 
 		} catch (Exception e) {
 			return new ResponseEntity<Map<String, String>>(errors, HttpStatus.INTERNAL_SERVER_ERROR);

@@ -157,7 +157,7 @@ public class ContactController {
 				});
 				throw new ValidationException(errors);
 			}
-			updatedContact = contactService.createContact(contact);
+			updatedContact = contactService.updateContact(id, contact);
 
 		} catch (Exception e) {
 			return new ResponseEntity<Map<String, String>>(errors, HttpStatus.INTERNAL_SERVER_ERROR);
