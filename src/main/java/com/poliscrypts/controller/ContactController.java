@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.poliscrypts.exception.GlobalException;
 import com.poliscrypts.exception.ValidationException;
 import com.poliscrypts.model.Contact;
 import com.poliscrypts.service.ContactService;
@@ -69,8 +70,9 @@ public class ContactController {
 			}
 
 			savedContact = contactService.createContact(contact);
-			;
 
+		} catch (GlobalException ge) {
+			return new ResponseEntity<String>(ge.getMessage(), HttpStatus.BAD_REQUEST);
 		} catch (Exception e) {
 			return new ResponseEntity<Map<String, String>>(errors, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -159,6 +161,8 @@ public class ContactController {
 			}
 			updatedContact = contactService.updateContact(id, contact);
 
+		} catch (GlobalException ge) {
+			return new ResponseEntity<String>(ge.getMessage(), HttpStatus.BAD_REQUEST);
 		} catch (Exception e) {
 			return new ResponseEntity<Map<String, String>>(errors, HttpStatus.INTERNAL_SERVER_ERROR);
 		}

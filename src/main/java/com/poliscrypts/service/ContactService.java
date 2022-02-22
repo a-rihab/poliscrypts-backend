@@ -1,5 +1,7 @@
 package com.poliscrypts.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -8,8 +10,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.poliscrypts.exception.EntityNotFoundException;
+import com.poliscrypts.exception.GlobalException;
 import com.poliscrypts.model.Contact;
+import com.poliscrypts.model.Entreprise;
 import com.poliscrypts.repository.ContactRepository;
+import com.poliscrypts.repository.EntrepriseRepository;
 import com.poliscrypts.util.PageContent;
 
 @Service
@@ -18,7 +23,20 @@ public class ContactService {
 	@Autowired
 	private ContactRepository contactRepository;
 
+	@Autowired
+	private EntrepriseRepository entrepriseRepository;
+
 	public Contact createContact(Contact contact) {
+		List<Entreprise> entreprises = contact.getEntreprises();
+		if (entreprises != null) {
+
+			entreprises.forEach(entreprise -> {
+				entrepriseRepository.findById(entreprise.getId()).orElseThrow(() -> new GlobalException(
+						"Impossible de créer un contact avec une entreprise dont l'id !" + entreprise.getId()));
+			});
+
+		}
+
 		return contactRepository.save(contact);
 	}
 
@@ -27,6 +45,14 @@ public class ContactService {
 		Contact oldContact = contactRepository.findById(id)
 				.orElseThrow(() -> new EntityNotFoundException("Impossible de modifier ce contact"));
 		contact.setId(oldContact.getId());
+
+		List<Entreprise> entreprises = contact.getEntreprises();
+		if (entreprises != null) {
+			entreprises.forEach(entreprise -> {
+				entrepriseRepository.findById(entreprise.getId()).orElseThrow(() -> new GlobalException(
+						"Impossible de mettre à jour ce contact avec une entreprise dont l'id !" + entreprise.getId()));
+			});
+		}
 
 		return contactRepository.save(contact);
 	}
