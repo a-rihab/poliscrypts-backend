@@ -32,7 +32,7 @@ public class ContactService {
 
 			entreprises.forEach(entreprise -> {
 				entrepriseRepository.findById(entreprise.getId()).orElseThrow(() -> new GlobalException(
-						"Impossible de créer un contact avec une entreprise dont l'id !" + entreprise.getId()));
+						"Impossible de créer un contact avec une entreprise dont l'id :" + entreprise.getId()));
 			});
 
 		}
@@ -50,7 +50,7 @@ public class ContactService {
 		if (entreprises != null) {
 			entreprises.forEach(entreprise -> {
 				entrepriseRepository.findById(entreprise.getId()).orElseThrow(() -> new GlobalException(
-						"Impossible de mettre à jour ce contact avec une entreprise dont l'id !" + entreprise.getId()));
+						"Impossible de mettre à jour ce contact avec une entreprise dont l'id :" + entreprise.getId()));
 			});
 		}
 
