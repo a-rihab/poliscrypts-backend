@@ -1,5 +1,8 @@
 package com.poliscrypts.controller;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +23,7 @@ import com.poliscrypts.security.JwtUtils;
 import com.poliscrypts.security.LoginRefreshRequest;
 import com.poliscrypts.security.LoginRequest;
 import com.poliscrypts.security.LoginResponse;
+import com.poliscrypts.security.UserDetailsImpl;
 import com.poliscrypts.service.UserDetailsServiceImpl;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -52,10 +56,14 @@ public class LoginController {
 		Authentication authentication = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 
+		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+		List<String> roles = userDetails.getAuthorities().stream().map(item -> item.getAuthority())
+				.collect(Collectors.toList());
+
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		String jwt = jwtUtils.generateAccessToken(authentication);
 		String jwtRefreshToken = jwtUtils.generateRefreshToken(authentication);
-		return ResponseEntity.ok(new LoginResponse(jwt, jwtRefreshToken));
+		return ResponseEntity.ok(new LoginResponse(jwt, jwtRefreshToken, userDetails.getUsername(), roles));
 	}
 
 	@Operation(summary = "login page")
