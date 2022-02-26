@@ -83,11 +83,14 @@ public class LoginController {
 						userDetails, null, userDetails.getAuthorities());
 
 				authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+				
+				List<String> roles = userDetails.getAuthorities().stream().map(item -> item.getAuthority())
+				.collect(Collectors.toList());
 
 				SecurityContextHolder.getContext().setAuthentication(authentication);
 				String jwt = jwtUtils.generateAccessToken(authentication);
 				String jwtRefreshToken = jwtUtils.generateRefreshToken(authentication);
-				return ResponseEntity.ok(new LoginResponse(jwt, jwtRefreshToken));
+				return ResponseEntity.ok(new LoginResponse(jwt, jwtRefreshToken, userDetails.getUsername(), roles));
 			} else {
 				return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
 			}
