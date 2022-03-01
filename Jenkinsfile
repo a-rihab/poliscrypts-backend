@@ -23,7 +23,7 @@ pipeline {
 	    stage('Pushing Docker Image to Dockerhub') {
             steps {
                 script {
-                    docker.withRegistry('https://registry.hub.docker.com', 'docker_hub') {
+                    docker.withRegistry('https://registry.hub.docker.com', 'docker-hub') {
                         docker.image("pearlcompany/poliscrypts-backimage:${TAG}").push()
                         docker.image("pearlcompany/poliscrypts-backimage:${TAG}").push("latest")
                     }
