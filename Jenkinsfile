@@ -10,7 +10,7 @@ pipeline {
     stages {
         stage ('Build') {
             steps {
-                sh 'mvn clean package'
+                bat 'mvn clean package'
             }
         }
         stage('Docker Build') {
@@ -32,9 +32,9 @@ pipeline {
         }
         stage('Deploy'){
             steps {
-                sh "docker stop poliscrypts-backimage | true"
-                sh "docker rm poliscrypts-backimage | true"
-                sh "docker run --name poliscrypts-backimage -d -p 9090:9090 pearlcompany/poliscrypts-backimage:${TAG}"
+                bat "docker stop poliscrypts-backimage | true"
+                bat "docker rm poliscrypts-backimage | true"
+                bat "docker run --name poliscrypts-backimage -d -p 9090:9090 pearlcompany/poliscrypts-backimage:${TAG}"
             }
         }
     }
