@@ -1,6 +1,6 @@
 node {
 	    // reference to maven
-	    def mvnHome = tool 'maven-3.8.4'
+	    def mvnHome = tool 'maven'
 	
 	    // holds reference to docker image
 	    def dockerImage
@@ -11,7 +11,7 @@ node {
 	      // Get some code from a GitHub repository
 	      git 'https://github.com/a-rihab/poliscrypts-backend.git'
 
-	      mvnHome = tool 'maven-3.5.2'
+	      mvnHome = tool 'maven'
 	    }    
 	  
 	    stage('Build Project') {
