@@ -1,39 +1,41 @@
-node {
-	    // reference to maven
-	    def mvnHome = tool 'maven'
-	
-	    // holds reference to docker image
-	    def dockerImage
-	 
-	    def dockerImageTag = "polibackimage${env.BUILD_NUMBER}"
-	    
-	    stage('Clone Repo') { // for display purposes
-	      // Get some code from a GitHub repository
-	      git 'https://github.com/a-rihab/poliscrypts-backend.git'
-
-	      mvnHome = tool 'maven'
-	    }    
-	  
-	    stage('Build Project') {
-	      // build project via maven
-	      bat "'${mvnHome}/bin/mvn' clean install"
-	    }
-			
-	    stage('Build Docker Image') {
-	      // build docker image
-	      dockerImage = docker.build("polibackimage:${env.BUILD_NUMBER}")
-	    }
-	   
-	    stage('Deploy Docker Image'){
-	      
-	      // deploy docker image to nexus
-			
-		  bat "docker stop polibackimage"
-		  
-		  bat "docker rm polibackimage"
-		  
-		  bat "docker run --name polibackimage -d -p 9090:9090 polibackimage:${env.BUILD_NUMBER}"
-		  
-	    }
-
-	}
+pipeline {
+    agent any
+    tools {
+        maven 'maven-3.8.4' 
+    }
+    environment {
+        DATE = new Date().format('yy.M')
+        TAG = "${DATE}.${BUILD_NUMBER}"
+    }
+    stages {
+        stage ('Build') {
+            steps {
+                sh 'mvn clean package'
+            }
+        }
+        stage('Docker Build') {
+            steps {
+                script {
+                    docker.build("pearlcompany/poliscrypts-backimage:${TAG}")
+                }
+            }
+        }
+	    stage('Pushing Docker Image to Dockerhub') {
+            steps {
+                script {
+                    docker.withRegistry('https://registry.hub.docker.com', 'docker_hub') {
+                        docker.image("pearlcompany/poliscrypts-backimage:${TAG}").push()
+                        docker.image("pearlcompany/poliscrypts-backimage:${TAG}").push("latest")
+                    }
+                }
+            }
+        }
+        stage('Deploy'){
+            steps {
+                sh "docker stop poliscrypts-backimage | true"
+                sh "docker rm poliscrypts-backimage | true"
+                sh "docker run --name poliscrypts-backimage -d -p 9090:9090 pearlcompany/poliscrypts-backimage:${TAG}"
+            }
+        }
+    }
+}
