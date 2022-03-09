@@ -49,4 +49,62 @@ public class Contact {
 	@JoinColumn(name = "contact_id")
 	private List<Entreprise> entreprises;
 
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getFirstName() {
+		return firstName;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public ContactType getType() {
+		return type;
+	}
+
+	public void setType(ContactType type) {
+		this.type = type;
+	}
+
+	public int getTva() {
+		return tva;
+	}
+
+	public void setTva(int tva) {
+		this.tva = tva;
+	}
+
+	public List<Entreprise> getEntreprises() {
+		return entreprises;
+	}
+
+	public void setEntreprises(List<Entreprise> entreprises) {
+		this.entreprises = entreprises;
+	}
+	
+	
+
 }
