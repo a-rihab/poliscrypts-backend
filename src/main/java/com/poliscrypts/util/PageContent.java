@@ -13,18 +13,4 @@ import lombok.NoArgsConstructor;
 public class PageContent<T> {
 	private List<T> content = new ArrayList<>();
 	private long totalElements = 0;
-	public List<T> getContent() {
-		return content;
-	}
-	public void setContent(List<T> content) {
-		this.content = content;
-	}
-	public long getTotalElements() {
-		return totalElements;
-	}
-	public void setTotalElements(long totalElements) {
-		this.totalElements = totalElements;
-	}
-
-	
 }

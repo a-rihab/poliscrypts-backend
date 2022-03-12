@@ -15,11 +15,4 @@ public class LoginResponse {
 	private String username;
 	private List<String> roles;
 
-	public LoginResponse(String accessToken, String refreshToken, String username, List<String> roles) {
-		this.accessToken = accessToken;
-		this.refreshToken = refreshToken;
-		this.username = username;
-		this.roles = roles;
-	}
-
 }

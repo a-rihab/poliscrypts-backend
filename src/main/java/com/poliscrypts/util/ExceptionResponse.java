@@ -18,13 +18,4 @@ public class ExceptionResponse {
 	private String message;
 	private int status;
 	private String details;
-
-	public ExceptionResponse(Date timestamp, String message, int status, String details) {
-		super();
-		this.timestamp = timestamp;
-		this.message = message;
-		this.status = status;
-		this.details = details;
-	}
-
 }

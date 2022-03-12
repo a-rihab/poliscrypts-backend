@@ -26,30 +26,4 @@ public class Entreprise {
 
 	@Min(value = 1, message = "Tva doit être min 1")
 	private int tva;
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getAddress() {
-		return address;
-	}
-
-	public void setAddress(String address) {
-		this.address = address;
-	}
-
-	public int getTva() {
-		return tva;
-	}
-
-	public void setTva(int tva) {
-		this.tva = tva;
-	}
-
-	
 }
