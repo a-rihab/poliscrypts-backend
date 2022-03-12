@@ -16,4 +16,5 @@ public class LoginRefreshRequest {
 
 	@NotBlank(message = "Vous devez fournir le refresh token !")
 	private String refreshToken;
+
 }

@@ -26,5 +26,4 @@ public class Entreprise {
 
 	@Min(value = 1, message = "Tva doit être min 1")
 	private int tva;
-
 }

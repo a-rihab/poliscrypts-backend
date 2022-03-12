@@ -46,7 +46,7 @@ public class EntrepriseController {
 			@ApiResponse(responseCode = "201", description = "Entreprise has been created successfully !", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Entreprise.class))),
 			@ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content) })
 
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	//@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@PostMapping
 	public ResponseEntity<?> saveEntreprise(
 			@Parameter(description = "Provide a entreprise payload", required = true) @Valid @RequestBody Entreprise entreprise,
@@ -100,7 +100,7 @@ public class EntrepriseController {
 			@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Entreprise.class))) }),
 			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
 
-	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+	//@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
 	@GetMapping("/search")
 	public ResponseEntity<PageContent<Entreprise>> getAllEntreprisesByAddress(
 			@Parameter(description = "Provide a address") @RequestParam String searchWord,

@@ -18,5 +18,4 @@ public class ExceptionResponse {
 	private String message;
 	private int status;
 	private String details;
-
 }
