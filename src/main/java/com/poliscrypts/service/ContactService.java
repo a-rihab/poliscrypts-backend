@@ -122,7 +122,7 @@ public class ContactService {
 
 	ContactDto mapEntityToDto(Contact contact) {
 
-		ContactDto contactDto = null;
+		ContactDto contactDto = new ContactDto();
 		contactDto.setId(contact.getId());
 		contactDto.setFirstName(contact.getFirstName());
 		contactDto.setLastName(contact.getLastName());
@@ -138,7 +138,7 @@ public class ContactService {
 
 	Contact mapDtoToEntity(ContactDto contactDto) {
 
-		Contact contact = null;
+		Contact contact = new Contact();
 		contact.setId(contactDto.getId());
 		contact.setFirstName(contactDto.getFirstName());
 		contact.setLastName(contactDto.getLastName());
