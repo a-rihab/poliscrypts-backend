@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.poliscrypts.dto.ContactDto;
 import com.poliscrypts.exception.GlobalException;
 import com.poliscrypts.exception.ValidationException;
 import com.poliscrypts.model.Contact;
@@ -50,11 +51,11 @@ public class ContactController {
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@PostMapping
 	public ResponseEntity<?> saveContact(
-			@Parameter(description = "Provide a contact payload", required = true) @Valid @RequestBody Contact contact,
+			@Parameter(description = "Provide a contact payload", required = true) @Valid @RequestBody ContactDto contactDto,
 			BindingResult results) {
 
 		Map<String, String> errors = new HashMap<>();
-		Contact savedContact = null;
+		ContactDto savedContact = null;
 
 		try {
 			if (results.hasErrors()) {
@@ -69,7 +70,7 @@ public class ContactController {
 
 			}
 
-			savedContact = contactService.createContact(contact);
+			savedContact = contactService.createContact(contactDto);
 
 		} catch (GlobalException ge) {
 			return new ResponseEntity<String>(ge.getMessage(), HttpStatus.BAD_REQUEST);
@@ -77,7 +78,7 @@ public class ContactController {
 			return new ResponseEntity<Map<String, String>>(errors, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
-		return new ResponseEntity<Contact>(savedContact, HttpStatus.CREATED);
+		return new ResponseEntity<ContactDto>(savedContact, HttpStatus.CREATED);
 
 	}
 
@@ -88,14 +89,14 @@ public class ContactController {
 
 	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
 	@GetMapping
-	public ResponseEntity<PageContent<Contact>> getAllContacts(
+	public ResponseEntity<PageContent<ContactDto>> getAllContacts(
 			@Parameter(description = "Provide a page number") @RequestParam(defaultValue = "0") Integer page,
 			@Parameter(description = "Provide a limit number") @RequestParam(defaultValue = "10") Integer limit,
 			@Parameter(description = "Provide a sort field") @RequestParam(defaultValue = "createDate") String sort,
 			@Parameter(description = "Provide a direction") @RequestParam(defaultValue = "desc") String dir) {
 
-		PageContent<Contact> pageDto = contactService.getAllContacs(page, limit, sort, dir);
-		return new ResponseEntity<PageContent<Contact>>(pageDto, HttpStatus.OK);
+		PageContent<ContactDto> pageDto = contactService.getAllContacs(page, limit, sort, dir);
+		return new ResponseEntity<PageContent<ContactDto>>(pageDto, HttpStatus.OK);
 	}
 
 	@Operation(summary = "Get all contacts by search ")
@@ -105,15 +106,15 @@ public class ContactController {
 
 	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
 	@GetMapping("/search")
-	public ResponseEntity<PageContent<Contact>> getAllEntreprisesByAddress(
+	public ResponseEntity<PageContent<ContactDto>> getAllEntreprisesByAddress(
 			@Parameter(description = "Provide a searchWord") @RequestParam String searchWord,
 			@Parameter(description = "Provide a page number") @RequestParam(defaultValue = "0") Integer page,
 			@Parameter(description = "Provide a limit number") @RequestParam(defaultValue = "10") Integer limit,
 			@Parameter(description = "Provide a sort field") @RequestParam(defaultValue = "createDate") String sort,
 			@Parameter(description = "Provide a direction") @RequestParam(defaultValue = "desc") String dir) {
 
-		PageContent<Contact> pageDto = contactService.findAllEntreprisesBySearch(searchWord, page, limit, sort, dir);
-		return new ResponseEntity<PageContent<Contact>>(pageDto, HttpStatus.OK);
+		PageContent<ContactDto> pageDto = contactService.findAllEntreprisesBySearch(searchWord, page, limit, sort, dir);
+		return new ResponseEntity<PageContent<ContactDto>>(pageDto, HttpStatus.OK);
 	}
 
 	@Operation(summary = "Get a contact by its id")
@@ -125,11 +126,11 @@ public class ContactController {
 
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@GetMapping("/{id}")
-	public ResponseEntity<Contact> getContactById(
+	public ResponseEntity<ContactDto> getContactById(
 			@Parameter(description = "Provide a contact id", required = true) @PathVariable Long id) {
 
-		Contact contact = contactService.findContactById(id);
-		return new ResponseEntity<Contact>(contact, HttpStatus.FOUND);
+		ContactDto contactDto = contactService.findContactById(id);
+		return new ResponseEntity<ContactDto>(contactDto, HttpStatus.FOUND);
 	}
 
 	@Operation(summary = "Update a contact by its id")
@@ -143,11 +144,11 @@ public class ContactController {
 	@PutMapping("/{id}")
 	public ResponseEntity<?> updateContact(
 			@Parameter(description = "Provide a payload of contact", required = true) @PathVariable Long id,
-			@Parameter(description = "Provide a contact id", required = true) @Valid @RequestBody Contact contact,
+			@Parameter(description = "Provide a contact id", required = true) @Valid @RequestBody ContactDto contactDto,
 			BindingResult results) {
 
 		Map<String, String> errors = new HashMap<>();
-		Contact updatedContact = null;
+		ContactDto updatedContactDto = null;
 
 		try {
 			if (results.hasErrors()) {
@@ -159,14 +160,14 @@ public class ContactController {
 				});
 				throw new ValidationException(errors);
 			}
-			updatedContact = contactService.updateContact(id, contact);
+			updatedContactDto = contactService.updateContact(id, contactDto);
 
 		} catch (GlobalException ge) {
 			return new ResponseEntity<String>(ge.getMessage(), HttpStatus.BAD_REQUEST);
 		} catch (Exception e) {
 			return new ResponseEntity<Map<String, String>>(errors, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		return new ResponseEntity<Contact>(updatedContact, HttpStatus.OK);
+		return new ResponseEntity<ContactDto>(updatedContactDto, HttpStatus.OK);
 	}
 
 	@Operation(summary = "Delete a contact by its id")

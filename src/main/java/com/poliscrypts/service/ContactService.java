@@ -1,6 +1,8 @@
 package com.poliscrypts.service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -9,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.poliscrypts.dto.ContactDto;
 import com.poliscrypts.exception.EntityNotFoundException;
 import com.poliscrypts.exception.GlobalException;
 import com.poliscrypts.model.Contact;
@@ -26,7 +29,8 @@ public class ContactService {
 	@Autowired
 	private EntrepriseRepository entrepriseRepository;
 
-	public Contact createContact(Contact contact) {
+	public ContactDto createContact(ContactDto contactDto) {
+		Contact contact = mapDtoToEntity(contactDto);
 		List<Entreprise> entreprises = contact.getEntreprises();
 		if (entreprises != null) {
 
@@ -37,13 +41,16 @@ public class ContactService {
 
 		}
 
-		return contactRepository.save(contact);
+		return mapEntityToDto(contactRepository.save(contact));
 	}
 
-	public Contact updateContact(Long id, Contact contact) {
+	public ContactDto updateContact(Long id, ContactDto contactDto) {
 
 		Contact oldContact = contactRepository.findById(id)
 				.orElseThrow(() -> new EntityNotFoundException("Impossible de modifier ce contact"));
+
+		Contact contact = mapDtoToEntity(contactDto);
+
 		contact.setId(oldContact.getId());
 
 		List<Entreprise> entreprises = contact.getEntreprises();
@@ -54,10 +61,10 @@ public class ContactService {
 			});
 		}
 
-		return contactRepository.save(contact);
+		return mapEntityToDto(contactRepository.save(contact));
 	}
 
-	public PageContent<Contact> getAllContacs(Integer page, Integer limit, String sort, String dir) {
+	public PageContent<ContactDto> getAllContacs(Integer page, Integer limit, String sort, String dir) {
 
 		Pageable paging = null;
 
@@ -68,14 +75,14 @@ public class ContactService {
 
 		Page<Contact> contacts = contactRepository.findAll(paging);
 
-		PageContent<Contact> pageContent = new PageContent<Contact>();
-		pageContent.setContent(contacts.getContent());
+		PageContent<ContactDto> pageContent = new PageContent<ContactDto>();
+		pageContent.setContent(mapEntitysToDtos(contacts.getContent()));
 		pageContent.setTotalElements(contacts.getTotalElements());
 
 		return pageContent;
 	}
 
-	public PageContent<Contact> findAllEntreprisesBySearch(String search, Integer page, Integer limit, String sort,
+	public PageContent<ContactDto> findAllEntreprisesBySearch(String search, Integer page, Integer limit, String sort,
 			String dir) {
 
 		Pageable paging = null;
@@ -89,15 +96,18 @@ public class ContactService {
 				.findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCaseOrAddressContainingIgnoreCase(search,
 						search, search, paging);
 
-		PageContent<Contact> pageContent = new PageContent<Contact>();
-		pageContent.setContent(contacts.getContent());
+		PageContent<ContactDto> pageContent = new PageContent<ContactDto>();
+		pageContent.setContent(mapEntitysToDtos(contacts.getContent()));
 		pageContent.setTotalElements(contacts.getTotalElements());
 
 		return pageContent;
 	}
 
-	public Contact findContactById(Long id) {
-		return contactRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Ce contact n'existe pas"));
+	public ContactDto findContactById(Long id) {
+		Contact contact = contactRepository.findById(id)
+				.orElseThrow(() -> new EntityNotFoundException("Ce contact n'existe pas"));
+
+		return mapEntityToDto(contact);
 	}
 
 	public String deleteContact(Long id) {
@@ -108,6 +118,50 @@ public class ContactService {
 
 		return "Contact with id " + id + " has been deleting succussfully";
 
+	}
+
+	ContactDto mapEntityToDto(Contact contact) {
+
+		ContactDto contactDto = null;
+		contactDto.setId(contact.getId());
+		contactDto.setFirstName(contact.getFirstName());
+		contactDto.setLastName(contact.getLastName());
+		contactDto.setType(contact.getType());
+		contactDto.setAddress(contact.getAddress());
+		contactDto.setTva(contact.getTva());
+		contactDto
+				.setEntreprises(contact.getEntreprises().stream().map(ent -> ent.getId()).collect(Collectors.toList()));
+
+		return contactDto;
+
+	}
+
+	Contact mapDtoToEntity(ContactDto contactDto) {
+
+		Contact contact = null;
+		contact.setId(contactDto.getId());
+		contact.setFirstName(contactDto.getFirstName());
+		contact.setLastName(contactDto.getLastName());
+		contact.setType(contactDto.getType());
+		contact.setAddress(contactDto.getAddress());
+		contact.setTva(contactDto.getTva());
+		List<Entreprise> entreprises = new ArrayList<>();
+
+		for (Long id : contactDto.getEntreprises()) {
+			Entreprise entreprise = entrepriseRepository.findById(id).orElse(null);
+			if (entreprise != null)
+				entreprises.add(entreprise);
+		}
+
+		contact.setEntreprises(entreprises);
+
+		return contact;
+
+	}
+
+	public List<ContactDto> mapEntitysToDtos(List<Contact> contacts) {
+		return contacts.stream().map(dto -> mapEntityToDto(dto)).filter(dto -> dto != null)
+				.collect(Collectors.toList());
 	}
 
 }

@@ -11,7 +11,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
-import javax.validation.constraints.NotBlank;
 
 import com.poliscrypts.util.ContactType;
 
@@ -29,15 +28,12 @@ public class Contact {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@NotBlank(message = "Veuillez saisir le nom !")
 	@Column(name = "first_name")
 	private String firstName;
 
-	@NotBlank(message = "Veuillez saisir le prénom !")
 	@Column(name = "last_name")
 	private String lastName;
 
-	@NotBlank(message = "Veuillez saisir une address !")
 	private String address;
 
 	@Enumerated(EnumType.STRING)
