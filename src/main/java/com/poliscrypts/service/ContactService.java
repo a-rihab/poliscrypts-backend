@@ -131,7 +131,7 @@ public class ContactService {
 		contactDto.setAddress(contact.getAddress());
 		contactDto.setTva(contact.getTva());
 		contactDto
-				.setEntreprises(contact.getEntreprises().stream().map(ent -> ent.getId()).collect(Collectors.toList()));
+				.setEntreprises(contact.getEntreprises().stream().map(ent -> ent.getId()).collect(Collectors.toSet()));
 
 		return contactDto;
 
