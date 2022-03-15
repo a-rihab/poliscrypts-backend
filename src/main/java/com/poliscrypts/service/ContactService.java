@@ -1,7 +1,8 @@
 package com.poliscrypts.service;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,7 @@ public class ContactService {
 
 	public ContactDto createContact(ContactDto contactDto) {
 		Contact contact = mapDtoToEntity(contactDto);
-		List<Entreprise> entreprises = contact.getEntreprises();
+		Set<Entreprise> entreprises = contact.getEntreprises();
 		if (entreprises != null) {
 
 			entreprises.forEach(entreprise -> {
@@ -53,7 +54,7 @@ public class ContactService {
 
 		contact.setId(oldContact.getId());
 
-		List<Entreprise> entreprises = contact.getEntreprises();
+		Set<Entreprise> entreprises = contact.getEntreprises();
 		if (entreprises != null) {
 			entreprises.forEach(entreprise -> {
 				entrepriseRepository.findById(entreprise.getId()).orElseThrow(() -> new GlobalException(
@@ -145,7 +146,7 @@ public class ContactService {
 		contact.setType(contactDto.getType());
 		contact.setAddress(contactDto.getAddress());
 		contact.setTva(contactDto.getTva());
-		List<Entreprise> entreprises = new ArrayList<>();
+		Set<Entreprise> entreprises = new HashSet<>();
 
 		for (Long id : contactDto.getEntreprises()) {
 			Entreprise entreprise = entrepriseRepository.findById(id).orElse(null);
