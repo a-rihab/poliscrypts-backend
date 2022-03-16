@@ -1,7 +1,7 @@
 package com.poliscrypts.dto;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -34,6 +34,6 @@ public class ContactDto {
 
 	private int tva;
 
-	private Set<Long> entreprises = new HashSet<>();
+	private List<Long> entreprises = new ArrayList<>();
 
 }

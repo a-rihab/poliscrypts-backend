@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.poliscrypts.dto.EntrepriseDto;
 import com.poliscrypts.exception.ValidationException;
 import com.poliscrypts.model.Entreprise;
 import com.poliscrypts.service.EntrepriseService;
@@ -46,14 +47,14 @@ public class EntrepriseController {
 			@ApiResponse(responseCode = "201", description = "Entreprise has been created successfully !", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Entreprise.class))),
 			@ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content) })
 
-	//@PreAuthorize("hasRole('ROLE_ADMIN')")
+	// @PreAuthorize("hasRole('ROLE_ADMIN')")
 	@PostMapping
 	public ResponseEntity<?> saveEntreprise(
-			@Parameter(description = "Provide a entreprise payload", required = true) @Valid @RequestBody Entreprise entreprise,
+			@Parameter(description = "Provide a entreprise payload", required = true) @Valid @RequestBody EntrepriseDto entrepriseDto,
 			BindingResult results) {
 
 		Map<String, String> errors = new HashMap<>();
-		Entreprise savedEntreprise = null;
+		EntrepriseDto savedEntreprise = null;
 
 		try {
 			if (results.hasErrors()) {
@@ -68,13 +69,13 @@ public class EntrepriseController {
 
 			}
 
-			savedEntreprise = entrepriseService.createEntreprise(entreprise);
+			savedEntreprise = entrepriseService.createEntreprise(entrepriseDto);
 
 		} catch (Exception e) {
 			return new ResponseEntity<Map<String, String>>(errors, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
-		return new ResponseEntity<Entreprise>(savedEntreprise, HttpStatus.CREATED);
+		return new ResponseEntity<EntrepriseDto>(savedEntreprise, HttpStatus.CREATED);
 
 	}
 
@@ -85,14 +86,14 @@ public class EntrepriseController {
 
 	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
 	@GetMapping
-	public ResponseEntity<PageContent<Entreprise>> getAllEntreprises(
+	public ResponseEntity<PageContent<EntrepriseDto>> getAllEntreprises(
 			@Parameter(description = "Provide a page number") @RequestParam(defaultValue = "0") Integer page,
 			@Parameter(description = "Provide a limit number") @RequestParam(defaultValue = "10") Integer limit,
 			@Parameter(description = "Provide a sort field") @RequestParam(defaultValue = "createDate") String sort,
 			@Parameter(description = "Provide a direction") @RequestParam(defaultValue = "desc") String dir) {
 
-		PageContent<Entreprise> pageDto = entrepriseService.getAllEntreprises(page, limit, sort, dir);
-		return new ResponseEntity<PageContent<Entreprise>>(pageDto, HttpStatus.OK);
+		PageContent<EntrepriseDto> pageDto = entrepriseService.getAllEntreprises(page, limit, sort, dir);
+		return new ResponseEntity<PageContent<EntrepriseDto>>(pageDto, HttpStatus.OK);
 	}
 
 	@Operation(summary = "Get all entreprises by address ")
@@ -100,18 +101,18 @@ public class EntrepriseController {
 			@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Entreprise.class))) }),
 			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
 
-	//@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+	// @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
 	@GetMapping("/search")
-	public ResponseEntity<PageContent<Entreprise>> getAllEntreprisesByAddress(
+	public ResponseEntity<PageContent<EntrepriseDto>> getAllEntreprisesByAddress(
 			@Parameter(description = "Provide a address") @RequestParam String searchWord,
 			@Parameter(description = "Provide a page number") @RequestParam(defaultValue = "0") Integer page,
 			@Parameter(description = "Provide a limit number") @RequestParam(defaultValue = "10") Integer limit,
 			@Parameter(description = "Provide a sort field") @RequestParam(defaultValue = "createDate") String sort,
 			@Parameter(description = "Provide a direction") @RequestParam(defaultValue = "desc") String dir) {
 
-		PageContent<Entreprise> pageDto = entrepriseService.findAllEntreprisesByAddress(searchWord, page, limit, sort,
-				dir);
-		return new ResponseEntity<PageContent<Entreprise>>(pageDto, HttpStatus.OK);
+		PageContent<EntrepriseDto> pageDto = entrepriseService.findAllEntreprisesByAddress(searchWord, page, limit,
+				sort, dir);
+		return new ResponseEntity<PageContent<EntrepriseDto>>(pageDto, HttpStatus.OK);
 	}
 
 	@Operation(summary = "Get a entreprise by its id")
@@ -123,11 +124,11 @@ public class EntrepriseController {
 
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@GetMapping("/{id}")
-	public ResponseEntity<Entreprise> getEntrepriseById(
+	public ResponseEntity<EntrepriseDto> getEntrepriseById(
 			@Parameter(description = "Provide a entreprise id", required = true) @PathVariable Long id) {
 
-		Entreprise entreprise = entrepriseService.findEntrepriseById(id);
-		return new ResponseEntity<Entreprise>(entreprise, HttpStatus.FOUND);
+		EntrepriseDto entrepriseDto = entrepriseService.findEntrepriseById(id);
+		return new ResponseEntity<EntrepriseDto>(entrepriseDto, HttpStatus.FOUND);
 	}
 
 	@Operation(summary = "Update a entreprise by its id")
@@ -141,11 +142,11 @@ public class EntrepriseController {
 	@PutMapping("/{id}")
 	public ResponseEntity<?> updateEntreprise(
 			@Parameter(description = "Provide a entreprise id", required = true) @PathVariable Long id,
-			@Parameter(description = "Provide a entreprise id", required = true) @Valid @RequestBody Entreprise entreprise,
+			@Parameter(description = "Provide a entreprise id", required = true) @Valid @RequestBody EntrepriseDto entrepriseDto,
 			BindingResult results) {
 
 		Map<String, String> errors = new HashMap<>();
-		Entreprise updatedEntreprise = null;
+		EntrepriseDto updatedEntreprise = null;
 
 		try {
 			if (results.hasErrors()) {
@@ -160,13 +161,13 @@ public class EntrepriseController {
 
 			}
 
-			updatedEntreprise = entrepriseService.updateEntreprise(id, entreprise);
+			updatedEntreprise = entrepriseService.updateEntreprise(id, entrepriseDto);
 
 		} catch (Exception e) {
 			return new ResponseEntity<Map<String, String>>(errors, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
-		return new ResponseEntity<Entreprise>(updatedEntreprise, HttpStatus.OK);
+		return new ResponseEntity<EntrepriseDto>(updatedEntreprise, HttpStatus.OK);
 
 	}
 

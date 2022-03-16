@@ -1,7 +1,7 @@
 package com.poliscrypts.model;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -49,6 +49,6 @@ public class Contact {
 	@JoinTable(name = "contact_entreprises", joinColumns = {
 			@JoinColumn(foreignKey = @ForeignKey(name = "fk_contact_id")) }, inverseJoinColumns = {
 					@JoinColumn(foreignKey = @ForeignKey(name = "fk_entreprise_id")) })
-	private Set<Entreprise> entreprises = new HashSet<>();
+	private List<Entreprise> entreprises = new ArrayList<>();
 
 }

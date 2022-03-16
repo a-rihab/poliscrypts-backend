@@ -33,9 +33,9 @@ CREATE TABLE IF NOT EXISTS entreprise(
 --
 
 CREATE TABLE IF NOT EXISTS contact_entreprises (
-    contact_id bigint NOT NULL,
+    contacts_id bigint NOT NULL,
     entreprises_id  bigint NOT NULL,
-    PRIMARY KEY (contact_id, entreprises_id)
+    PRIMARY KEY (contacts_id, entreprises_id)
 );
 
 --
@@ -53,6 +53,6 @@ CREATE TABLE IF NOT EXISTS user(
 
 
 ALTER TABLE contact_entreprises
-    ADD CONSTRAINT fk_contact_id FOREIGN KEY (contact_id) REFERENCES contact(id);
+    ADD CONSTRAINT fk_contact_id FOREIGN KEY (contacts_id) REFERENCES contact(id);
 ALTER TABLE contact_entreprises
     ADD CONSTRAINT fk_entreprise_id FOREIGN KEY (entreprises_id) REFERENCES entreprise(id);

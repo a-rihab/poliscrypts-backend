@@ -1,8 +1,7 @@
 package com.poliscrypts.service;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,13 +31,8 @@ public class ContactService {
 
 	public ContactDto createContact(ContactDto contactDto) {
 		Contact contact = mapDtoToEntity(contactDto);
-		Set<Entreprise> entreprises = contact.getEntreprises();
+		List<Entreprise> entreprises = contact.getEntreprises();
 		if (entreprises != null) {
-
-			entreprises.forEach(entreprise -> {
-				entrepriseRepository.findById(entreprise.getId()).orElseThrow(() -> new GlobalException(
-						"Impossible de créer un contact avec une entreprise dont l'id :" + entreprise.getId()));
-			});
 
 		}
 
@@ -48,17 +42,17 @@ public class ContactService {
 	public ContactDto updateContact(Long id, ContactDto contactDto) {
 
 		Contact oldContact = contactRepository.findById(id)
-				.orElseThrow(() -> new EntityNotFoundException("Impossible de modifier ce contact"));
+				.orElseThrow(() -> new EntityNotFoundException("Impossible to update this contact with id " + id));
 
 		Contact contact = mapDtoToEntity(contactDto);
 
 		contact.setId(oldContact.getId());
 
-		Set<Entreprise> entreprises = contact.getEntreprises();
+		List<Entreprise> entreprises = contact.getEntreprises();
 		if (entreprises != null) {
 			entreprises.forEach(entreprise -> {
 				entrepriseRepository.findById(entreprise.getId()).orElseThrow(() -> new GlobalException(
-						"Impossible de mettre à jour ce contact avec une entreprise dont l'id :" + entreprise.getId()));
+						"Impossible to update a contact with entreprise id " + entreprise.getId()));
 			});
 		}
 
@@ -106,14 +100,14 @@ public class ContactService {
 
 	public ContactDto findContactById(Long id) {
 		Contact contact = contactRepository.findById(id)
-				.orElseThrow(() -> new EntityNotFoundException("Ce contact n'existe pas"));
+				.orElseThrow(() -> new EntityNotFoundException("A Contact not exist with id " + id));
 
 		return mapEntityToDto(contact);
 	}
 
 	public String deleteContact(Long id) {
 		Contact contact = contactRepository.findById(id)
-				.orElseThrow(() -> new EntityNotFoundException("Impossible de supprimer ce contact"));
+				.orElseThrow(() -> new EntityNotFoundException("Impossible de delete a contact with id " + id));
 
 		contactRepository.delete(contact);
 
@@ -146,12 +140,13 @@ public class ContactService {
 		contact.setType(contactDto.getType());
 		contact.setAddress(contactDto.getAddress());
 		contact.setTva(contactDto.getTva());
-		Set<Entreprise> entreprises = new HashSet<>();
+		List<Entreprise> entreprises = new ArrayList<>();
 
 		for (Long id : contactDto.getEntreprises()) {
-			Entreprise entreprise = entrepriseRepository.findById(id).orElse(null);
-			if (entreprise != null)
-				entreprises.add(entreprise);
+			Entreprise entreprise = entrepriseRepository.findById(id)
+					.orElseThrow(() -> new GlobalException("Impossible to create contact with entreprise id " + id));
+
+			entreprises.add(entreprise);
 		}
 
 		contact.setEntreprises(entreprises);
