@@ -3,7 +3,6 @@ package com.poliscrypts.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -28,7 +27,6 @@ public class Entreprise {
 
 	private int tva;
 
-	@ManyToMany(mappedBy = "entreprises", cascade = CascadeType.ALL)
+	@ManyToMany(mappedBy = "entreprises")
 	List<Contact> contacts = new ArrayList<>();
-
 }
