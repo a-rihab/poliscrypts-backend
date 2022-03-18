@@ -1,7 +1,7 @@
 package com.poliscrypts.dto;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.validation.constraints.NotBlank;
 
@@ -27,6 +27,6 @@ public class ContactDto {
 
 	private Integer tva;
 
-	private List<Long> entreprises = new ArrayList<>();
+	private Set<Long> entreprises = new HashSet<>();
 
 }

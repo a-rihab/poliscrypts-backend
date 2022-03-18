@@ -1,7 +1,7 @@
 package com.poliscrypts.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -26,5 +26,5 @@ public class Entreprise {
 	private Integer tva;
 
 	@ManyToMany(mappedBy = "entreprises")
-	List<Contact> contacts = new ArrayList<>();
+	Set<Contact> contacts = new HashSet<>();
 }
