@@ -2,13 +2,11 @@ package com.poliscrypts.security;
 
 import javax.validation.constraints.NotBlank;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
-@NoArgsConstructor
-@AllArgsConstructor
-@Data
+@Setter
+@Getter
 public class LoginRequest {
 
 	@NotBlank(message = "Le nom d'utilisateur est obligatoire")
