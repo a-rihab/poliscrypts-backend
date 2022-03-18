@@ -1,8 +1,6 @@
 package com.poliscrypts.exception;
 
-import java.io.Serializable;
-
-public class GlobalException extends RuntimeException implements Serializable {
+public class GlobalException extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
 
