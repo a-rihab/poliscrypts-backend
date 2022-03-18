@@ -36,7 +36,7 @@ public class Contact {
 
 	private String type;
 
-	private int tva;
+	private Integer tva;
 
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "contact_entreprises", joinColumns = {

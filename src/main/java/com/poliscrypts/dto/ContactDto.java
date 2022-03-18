@@ -25,7 +25,7 @@ public class ContactDto {
 
 	private String type;
 
-	private int tva;
+	private Integer tva;
 
 	private List<Long> entreprises = new ArrayList<>();
 

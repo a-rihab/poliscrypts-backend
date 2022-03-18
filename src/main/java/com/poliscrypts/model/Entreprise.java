@@ -23,7 +23,7 @@ public class Entreprise {
 
 	private String address;
 
-	private int tva;
+	private Integer tva;
 
 	@ManyToMany(mappedBy = "entreprises")
 	List<Contact> contacts = new ArrayList<>();
