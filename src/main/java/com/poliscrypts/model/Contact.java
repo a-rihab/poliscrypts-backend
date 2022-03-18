@@ -5,8 +5,6 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
@@ -15,8 +13,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-
-import com.poliscrypts.util.ContactType;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -38,8 +34,7 @@ public class Contact {
 
 	private String address;
 
-	@Enumerated(EnumType.STRING)
-	private ContactType type;
+	private String type;
 
 	private int tva;
 

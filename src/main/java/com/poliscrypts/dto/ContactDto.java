@@ -3,11 +3,7 @@ package com.poliscrypts.dto;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.validation.constraints.NotBlank;
-
-import com.poliscrypts.util.ContactType;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -27,8 +23,7 @@ public class ContactDto {
 	@NotBlank(message = "Veuillez saisir une address !")
 	private String address;
 
-	@Enumerated(EnumType.STRING)
-	private ContactType type;
+	private String type;
 
 	private int tva;
 
