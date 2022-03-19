@@ -25,14 +25,14 @@ public class EnterpriseService {
 	@Autowired
 	private EnterpriseRepository enterpriseRepository;
 
-	public EnterpriseDto createEntreprise(EnterpriseDto enterpriseDto) {
+	public EnterpriseDto createEnterprise(EnterpriseDto enterpriseDto) {
 
 		Enterprise enterprise = mapDtoToEntity(enterpriseDto);
 
 		return mapEntityToDto(enterpriseRepository.save(enterprise));
 	}
 
-	public EnterpriseDto updateEntreprise(Long id, EnterpriseDto enterpriseDto) {
+	public EnterpriseDto updateEnterprise(Long id, EnterpriseDto enterpriseDto) {
 
 		enterpriseRepository.findById(id)
 				.orElseThrow(() -> new EntityNotFoundException("Impossible to update entreprise with id " + id));
@@ -77,15 +77,15 @@ public class EnterpriseService {
 		return pageContent;
 	}
 
-	public EnterpriseDto findEntrepriseById(Long id) {
+	public EnterpriseDto findEnterpriseById(Long id) {
 		Enterprise enterprise = enterpriseRepository.findById(id)
-				.orElseThrow(() -> new EntityNotFoundException("Entreprise not exist with id " + id));
+				.orElseThrow(() -> new EntityNotFoundException("Enterprise not exist with id " + id));
 
 		return mapEntityToDto(enterprise);
 	}
 
 	@Transactional
-	public String deleteEntreprise(Long id) {
+	public String deleteEnterprise(Long id) {
 		Enterprise enterprise = enterpriseRepository.findById(id)
 				.orElseThrow(() -> new EntityNotFoundException("Impossible to delete entreprise with id " + id));
 
@@ -95,7 +95,7 @@ public class EnterpriseService {
 
 		enterpriseRepository.delete(enterprise);
 
-		return "Entreprise with id " + id + " has been deleted succussfully";
+		return "Enterprise with id " + id + " has been deleted succussfully";
 	}
 
 	EnterpriseDto mapEntityToDto(Enterprise enterprise) {

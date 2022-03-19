@@ -1,16 +1,11 @@
 package com.poliscrypts.controller;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,8 +17,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.poliscrypts.dto.ContactDto;
-import com.poliscrypts.exception.GlobalException;
-import com.poliscrypts.exception.ValidationException;
 import com.poliscrypts.model.Contact;
 import com.poliscrypts.service.ContactService;
 import com.poliscrypts.util.PageContent;
@@ -51,33 +44,9 @@ public class ContactController {
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@PostMapping
 	public ResponseEntity<?> saveContact(
-			@Parameter(description = "Provide a contact payload", required = true) @Valid @RequestBody ContactDto contactDto,
-			BindingResult results) {
+			@Parameter(description = "Provide a contact payload", required = true) @Valid @RequestBody ContactDto contactDto) {
 
-		Map<String, String> errors = new HashMap<>();
-		ContactDto savedContact = null;
-
-		try {
-			if (results.hasErrors()) {
-
-				results.getAllErrors().forEach((error) -> {
-					String fieldName = ((FieldError) error).getField();
-					String errorMessage = error.getDefaultMessage();
-					errors.put(fieldName, errorMessage);
-				});
-
-				throw new ValidationException(errors);
-
-			}
-
-			savedContact = contactService.createContact(contactDto);
-
-		} catch (GlobalException ge) {
-			return new ResponseEntity<String>(ge.getMessage(), HttpStatus.BAD_REQUEST);
-		} catch (Exception e) {
-			return new ResponseEntity<Map<String, String>>(errors, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-
+		ContactDto savedContact = contactService.createContact(contactDto);
 		return new ResponseEntity<ContactDto>(savedContact, HttpStatus.CREATED);
 
 	}
@@ -144,29 +113,9 @@ public class ContactController {
 	@PutMapping("/{contactId}")
 	public ResponseEntity<?> updateContact(
 			@Parameter(description = "Provide a payload of contact", required = true) @PathVariable Long contactId,
-			@Parameter(description = "Provide a contact id", required = true) @Valid @RequestBody ContactDto contactDto,
-			BindingResult results) {
+			@Parameter(description = "Provide a contact id", required = true) @Valid @RequestBody ContactDto contactDto) {
 
-		Map<String, String> errors = new HashMap<>();
-		ContactDto updatedContactDto = null;
-
-		try {
-			if (results.hasErrors()) {
-
-				results.getAllErrors().forEach((error) -> {
-					String fieldName = ((FieldError) error).getField();
-					String errorMessage = error.getDefaultMessage();
-					errors.put(fieldName, errorMessage);
-				});
-				throw new ValidationException(errors);
-			}
-			updatedContactDto = contactService.updateContact(contactId, contactDto);
-
-		} catch (GlobalException ge) {
-			return new ResponseEntity<String>(ge.getMessage(), HttpStatus.BAD_REQUEST);
-		} catch (Exception e) {
-			return new ResponseEntity<Map<String, String>>(errors, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		ContactDto updatedContactDto = contactService.updateContact(contactId, contactDto);
 		return new ResponseEntity<ContactDto>(updatedContactDto, HttpStatus.OK);
 	}
 

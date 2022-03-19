@@ -14,13 +14,13 @@ public class ContactDto {
 
 	private Long id;
 
-	@NotBlank(message = "Please enter valid firstName !")
+	@NotBlank(message = "First name must not be empty !")
 	private String firstName;
 
-	@NotBlank(message = "Please enter valid lastName !")
+	@NotBlank(message = "Last name must not be empty !")
 	private String lastName;
 
-	@NotBlank(message = "Please enter valid address !")
+	@NotBlank(message = "Address must not be empty !")
 	private String address;
 
 	private String type;
