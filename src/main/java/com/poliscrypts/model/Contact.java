@@ -39,9 +39,9 @@ public class Contact {
 	private Integer tva;
 
 	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(name = "contact_entreprises", joinColumns = {
+	@JoinTable(name = "contact_enterprises", joinColumns = {
 			@JoinColumn(foreignKey = @ForeignKey(name = "fk_contact_id")) }, inverseJoinColumns = {
-					@JoinColumn(foreignKey = @ForeignKey(name = "fk_entreprise_id")) })
-	private Set<Entreprise> entreprises = new HashSet<>();
+					@JoinColumn(foreignKey = @ForeignKey(name = "fk_enterprise_id")) })
+	private Set<Enterprise> enterprises = new HashSet<>();
 
 }

@@ -8,7 +8,7 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class EntrepriseDto {
+public class EnterpriseDto {
 
 	private Long id;
 

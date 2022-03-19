@@ -15,7 +15,7 @@ import lombok.Setter;
 @Setter
 @Getter
 @Entity
-public class Entreprise {
+public class Enterprise {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,6 +25,6 @@ public class Entreprise {
 
 	private Integer tva;
 
-	@ManyToMany(mappedBy = "entreprises")
+	@ManyToMany(mappedBy = "enterprises")
 	Set<Contact> contacts = new HashSet<>();
 }

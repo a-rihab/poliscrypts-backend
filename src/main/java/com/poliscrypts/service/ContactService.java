@@ -16,9 +16,9 @@ import com.poliscrypts.dto.ContactDto;
 import com.poliscrypts.exception.EntityNotFoundException;
 import com.poliscrypts.exception.GlobalException;
 import com.poliscrypts.model.Contact;
-import com.poliscrypts.model.Entreprise;
+import com.poliscrypts.model.Enterprise;
 import com.poliscrypts.repository.ContactRepository;
-import com.poliscrypts.repository.EntrepriseRepository;
+import com.poliscrypts.repository.EnterpriseRepository;
 import com.poliscrypts.util.PageContent;
 
 @Service
@@ -28,12 +28,12 @@ public class ContactService {
 	private ContactRepository contactRepository;
 
 	@Autowired
-	private EntrepriseRepository entrepriseRepository;
+	private EnterpriseRepository enterpriseRepository;
 
 	public ContactDto createContact(ContactDto contactDto) {
 		Contact contact = mapDtoToEntity(contactDto);
-		Set<Entreprise> entreprises = contact.getEntreprises();
-		if (entreprises != null) {
+		Set<Enterprise> enterprises = contact.getEnterprises();
+		if (enterprises != null) {
 
 		}
 
@@ -49,10 +49,10 @@ public class ContactService {
 
 		contact.setId(id);
 
-		Set<Entreprise> entreprises = contact.getEntreprises();
-		if (entreprises != null) {
-			entreprises.forEach(entreprise -> {
-				entrepriseRepository.findById(entreprise.getId()).orElseThrow(() -> new GlobalException(
+		Set<Enterprise> enterprises = contact.getEnterprises();
+		if (enterprises != null) {
+			enterprises.forEach(entreprise -> {
+				enterpriseRepository.findById(entreprise.getId()).orElseThrow(() -> new GlobalException(
 						"Impossible to update a contact with entreprise id " + entreprise.getId()));
 			});
 		}
@@ -76,7 +76,7 @@ public class ContactService {
 		return pageContent;
 	}
 
-	public PageContent<ContactDto> findAllEntreprisesBySearch(String search, Integer page, Integer limit, String sort,
+	public PageContent<ContactDto> findAllEnterprisesBySearch(String search, Integer page, Integer limit, String sort,
 			String dir) {
 
 		Sort _sort = dir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sort).ascending()
@@ -122,7 +122,7 @@ public class ContactService {
 		contactDto.setAddress(contact.getAddress());
 		contactDto.setTva(contact.getTva());
 		contactDto
-				.setEntreprises(contact.getEntreprises().stream().map(ent -> ent.getId()).collect(Collectors.toSet()));
+				.setEnterprises(contact.getEnterprises().stream().map(ent -> ent.getId()).collect(Collectors.toSet()));
 
 		return contactDto;
 
@@ -137,16 +137,16 @@ public class ContactService {
 		contact.setType(contactDto.getType());
 		contact.setAddress(contactDto.getAddress());
 		contact.setTva(contactDto.getTva());
-		Set<Entreprise> entreprises = new HashSet<>();
+		Set<Enterprise> enterprises = new HashSet<>();
 
-		for (Long id : contactDto.getEntreprises()) {
-			Entreprise entreprise = entrepriseRepository.findById(id)
+		for (Long id : contactDto.getEnterprises()) {
+			Enterprise enterprise = enterpriseRepository.findById(id)
 					.orElseThrow(() -> new GlobalException("Impossible to create contact with entreprise id " + id));
 
-			entreprises.add(entreprise);
+			enterprises.add(enterprise);
 		}
 
-		contact.setEntreprises(entreprises);
+		contact.setEnterprises(enterprises);
 
 		return contact;
 

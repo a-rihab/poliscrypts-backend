@@ -113,7 +113,7 @@ public class ContactController {
 			@Parameter(description = "Provide a sort field") @RequestParam(defaultValue = "createDate") String sort,
 			@Parameter(description = "Provide a direction") @RequestParam(defaultValue = "desc") String dir) {
 
-		PageContent<ContactDto> pageDto = contactService.findAllEntreprisesBySearch(searchWord, page, limit, sort, dir);
+		PageContent<ContactDto> pageDto = contactService.findAllEnterprisesBySearch(searchWord, page, limit, sort, dir);
 		return new ResponseEntity<PageContent<ContactDto>>(pageDto, HttpStatus.OK);
 	}
 

@@ -27,6 +27,6 @@ public class ContactDto {
 
 	private Integer tva;
 
-	private Set<Long> entreprises = new HashSet<>();
+	private Set<Long> enterprises = new HashSet<>();
 
 }
