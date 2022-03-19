@@ -36,13 +36,13 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 @RestController
-@RequestMapping("/api/entreprise")
+@RequestMapping("/api/enterprise")
 public class EntrepriseController {
 
 	@Autowired
 	private EnterpriseService enterpriseService;
 
-	@Operation(summary = "Create a entreprise")
+	@Operation(summary = "Create a enterprise")
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "201", description = "Entreprise has been created successfully !", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Enterprise.class))),
 			@ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content) })
@@ -50,7 +50,7 @@ public class EntrepriseController {
 	// @PreAuthorize("hasRole('ROLE_ADMIN')")
 	@PostMapping
 	public ResponseEntity<?> saveEntreprise(
-			@Parameter(description = "Provide a entreprise payload", required = true) @Valid @RequestBody EnterpriseDto enterpriseDto,
+			@Parameter(description = "Provide a enterprise payload", required = true) @Valid @RequestBody EnterpriseDto enterpriseDto,
 			BindingResult results) {
 
 		Map<String, String> errors = new HashMap<>();
@@ -79,8 +79,8 @@ public class EntrepriseController {
 
 	}
 
-	@Operation(summary = "Get all entreprises ")
-	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Retrieve all entreprises", content = {
+	@Operation(summary = "Get all enterprises ")
+	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Retrieve all enterprises", content = {
 			@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Enterprise.class))) }),
 			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
 
@@ -96,8 +96,8 @@ public class EntrepriseController {
 		return new ResponseEntity<PageContent<EnterpriseDto>>(pageDto, HttpStatus.OK);
 	}
 
-	@Operation(summary = "Get all entreprises by address ")
-	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Retrieve all entreprises", content = {
+	@Operation(summary = "Get all enterprises by address ")
+	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Retrieve all enterprises", content = {
 			@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Enterprise.class))) }),
 			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
 
@@ -115,9 +115,9 @@ public class EntrepriseController {
 		return new ResponseEntity<PageContent<EnterpriseDto>>(pageDto, HttpStatus.OK);
 	}
 
-	@Operation(summary = "Get a entreprise by its id")
+	@Operation(summary = "Get a enterprise by its id")
 	@ApiResponses(value = {
-			@ApiResponse(responseCode = "200", description = "Found the entreprise", content = {
+			@ApiResponse(responseCode = "200", description = "Found the enterprise", content = {
 					@Content(mediaType = "application/json", schema = @Schema(implementation = Enterprise.class)) }),
 			@ApiResponse(responseCode = "400", description = "Invalid id supplied", content = @Content),
 			@ApiResponse(responseCode = "404", description = "Entreprise not found", content = @Content) })
@@ -125,15 +125,15 @@ public class EntrepriseController {
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@GetMapping("/{id}")
 	public ResponseEntity<EnterpriseDto> getEntrepriseById(
-			@Parameter(description = "Provide a entreprise id", required = true) @PathVariable Long id) {
+			@Parameter(description = "Provide a enterprise id", required = true) @PathVariable Long id) {
 
 		EnterpriseDto enterpriseDto = enterpriseService.findEntrepriseById(id);
 		return new ResponseEntity<EnterpriseDto>(enterpriseDto, HttpStatus.FOUND);
 	}
 
-	@Operation(summary = "Update a entreprise by its id")
+	@Operation(summary = "Update a enterprise by its id")
 	@ApiResponses(value = {
-			@ApiResponse(responseCode = "200", description = "Update the entreprise", content = {
+			@ApiResponse(responseCode = "200", description = "Update the enterprise", content = {
 					@Content(mediaType = "application/json", schema = @Schema(implementation = Enterprise.class)) }),
 			@ApiResponse(responseCode = "400", description = "Invalid id supplied", content = @Content),
 			@ApiResponse(responseCode = "404", description = "Entreprise not found", content = @Content) })
@@ -141,8 +141,8 @@ public class EntrepriseController {
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@PutMapping("/{id}")
 	public ResponseEntity<?> updateEntreprise(
-			@Parameter(description = "Provide a entreprise id", required = true) @PathVariable Long id,
-			@Parameter(description = "Provide a entreprise id", required = true) @Valid @RequestBody EnterpriseDto enterpriseDto,
+			@Parameter(description = "Provide a enterprise id", required = true) @PathVariable Long id,
+			@Parameter(description = "Provide a enterprise id", required = true) @Valid @RequestBody EnterpriseDto enterpriseDto,
 			BindingResult results) {
 
 		Map<String, String> errors = new HashMap<>();
@@ -171,9 +171,9 @@ public class EntrepriseController {
 
 	}
 
-	@Operation(summary = "Delete a entreprise by its id")
+	@Operation(summary = "Delete a enterprise by its id")
 	@ApiResponses(value = {
-			@ApiResponse(responseCode = "200", description = "Delete the entreprise", content = {
+			@ApiResponse(responseCode = "200", description = "Delete the enterprise", content = {
 					@Content(mediaType = "application/json", schema = @Schema(implementation = Enterprise.class)) }),
 			@ApiResponse(responseCode = "400", description = "Invalid id supplied", content = @Content),
 			@ApiResponse(responseCode = "404", description = "Entreprise not found", content = @Content) })
@@ -181,7 +181,7 @@ public class EntrepriseController {
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@DeleteMapping("/{id}")
 	public ResponseEntity<String> deleteEntreprise(
-			@Parameter(description = "Provide a entreprise id", required = true) @PathVariable Long id) {
+			@Parameter(description = "Provide a enterprise id", required = true) @PathVariable Long id) {
 
 		String response = enterpriseService.deleteEntreprise(id);
 
