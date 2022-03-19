@@ -14,13 +14,13 @@ public class ContactDto {
 
 	private Long id;
 
-	@NotBlank(message = "Veuillez saisir le nom !")
+	@NotBlank(message = "Please enter valid firstName !")
 	private String firstName;
 
-	@NotBlank(message = "Veuillez saisir le prénom !")
+	@NotBlank(message = "Please enter valid lastName !")
 	private String lastName;
 
-	@NotBlank(message = "Veuillez saisir une address !")
+	@NotBlank(message = "Please enter valid address !")
 	private String address;
 
 	private String type;

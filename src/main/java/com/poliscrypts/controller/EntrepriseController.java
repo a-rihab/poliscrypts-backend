@@ -47,7 +47,7 @@ public class EntrepriseController {
 			@ApiResponse(responseCode = "201", description = "Entreprise has been created successfully !", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Enterprise.class))),
 			@ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content) })
 
-	// @PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@PostMapping
 	public ResponseEntity<?> saveEntreprise(
 			@Parameter(description = "Provide a enterprise payload", required = true) @Valid @RequestBody EnterpriseDto enterpriseDto,
@@ -101,7 +101,7 @@ public class EntrepriseController {
 			@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Enterprise.class))) }),
 			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
 
-	// @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
 	@GetMapping("/search")
 	public ResponseEntity<PageContent<EnterpriseDto>> getAllEntreprisesByAddress(
 			@Parameter(description = "Provide a address") @RequestParam String searchWord,
@@ -123,11 +123,11 @@ public class EntrepriseController {
 			@ApiResponse(responseCode = "404", description = "Entreprise not found", content = @Content) })
 
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	@GetMapping("/{id}")
+	@GetMapping("/{enterpriseId}")
 	public ResponseEntity<EnterpriseDto> getEntrepriseById(
-			@Parameter(description = "Provide a enterprise id", required = true) @PathVariable Long id) {
+			@Parameter(description = "Provide a enterprise id", required = true) @PathVariable Long enterpriseId) {
 
-		EnterpriseDto enterpriseDto = enterpriseService.findEntrepriseById(id);
+		EnterpriseDto enterpriseDto = enterpriseService.findEntrepriseById(enterpriseId);
 		return new ResponseEntity<EnterpriseDto>(enterpriseDto, HttpStatus.FOUND);
 	}
 
@@ -139,9 +139,9 @@ public class EntrepriseController {
 			@ApiResponse(responseCode = "404", description = "Entreprise not found", content = @Content) })
 
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	@PutMapping("/{id}")
+	@PutMapping("/{enterpriseId}")
 	public ResponseEntity<?> updateEntreprise(
-			@Parameter(description = "Provide a enterprise id", required = true) @PathVariable Long id,
+			@Parameter(description = "Provide a enterprise id", required = true) @PathVariable Long enterpriseId,
 			@Parameter(description = "Provide a enterprise id", required = true) @Valid @RequestBody EnterpriseDto enterpriseDto,
 			BindingResult results) {
 
@@ -161,7 +161,7 @@ public class EntrepriseController {
 
 			}
 
-			updatedEntreprise = enterpriseService.updateEntreprise(id, enterpriseDto);
+			updatedEntreprise = enterpriseService.updateEntreprise(enterpriseId, enterpriseDto);
 
 		} catch (Exception e) {
 			return new ResponseEntity<Map<String, String>>(errors, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -179,11 +179,11 @@ public class EntrepriseController {
 			@ApiResponse(responseCode = "404", description = "Entreprise not found", content = @Content) })
 
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	@DeleteMapping("/{id}")
+	@DeleteMapping("/{enterpriseId}")
 	public ResponseEntity<String> deleteEntreprise(
-			@Parameter(description = "Provide a enterprise id", required = true) @PathVariable Long id) {
+			@Parameter(description = "Provide a enterprise id", required = true) @PathVariable Long enterpriseId) {
 
-		String response = enterpriseService.deleteEntreprise(id);
+		String response = enterpriseService.deleteEntreprise(enterpriseId);
 
 		return new ResponseEntity<String>(response, HttpStatus.OK);
 

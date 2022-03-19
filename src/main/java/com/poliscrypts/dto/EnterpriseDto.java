@@ -12,10 +12,10 @@ public class EnterpriseDto {
 
 	private Long id;
 
-	@NotBlank(message = "Veuillez saisir une address !")
+	@NotBlank(message = "Please enter valid address !")
 	private String address;
 
-	@Min(value = 1, message = "Tva doit être min 1")
+	@Min(value = 1, message = "Tva must be at leas")
 	private Integer tva;
 
 }

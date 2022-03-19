@@ -125,11 +125,11 @@ public class ContactController {
 			@ApiResponse(responseCode = "404", description = "Contact not found", content = @Content) })
 
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	@GetMapping("/{id}")
+	@GetMapping("/{contactId}")
 	public ResponseEntity<ContactDto> getContactById(
-			@Parameter(description = "Provide a contact id", required = true) @PathVariable Long id) {
+			@Parameter(description = "Provide a contact id", required = true) @PathVariable Long contactId) {
 
-		ContactDto contactDto = contactService.findContactById(id);
+		ContactDto contactDto = contactService.findContactById(contactId);
 		return new ResponseEntity<ContactDto>(contactDto, HttpStatus.FOUND);
 	}
 
@@ -141,9 +141,9 @@ public class ContactController {
 			@ApiResponse(responseCode = "404", description = "Contact not found", content = @Content) })
 
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	@PutMapping("/{id}")
+	@PutMapping("/{contactId}")
 	public ResponseEntity<?> updateContact(
-			@Parameter(description = "Provide a payload of contact", required = true) @PathVariable Long id,
+			@Parameter(description = "Provide a payload of contact", required = true) @PathVariable Long contactId,
 			@Parameter(description = "Provide a contact id", required = true) @Valid @RequestBody ContactDto contactDto,
 			BindingResult results) {
 
@@ -160,7 +160,7 @@ public class ContactController {
 				});
 				throw new ValidationException(errors);
 			}
-			updatedContactDto = contactService.updateContact(id, contactDto);
+			updatedContactDto = contactService.updateContact(contactId, contactDto);
 
 		} catch (GlobalException ge) {
 			return new ResponseEntity<String>(ge.getMessage(), HttpStatus.BAD_REQUEST);
@@ -178,11 +178,11 @@ public class ContactController {
 			@ApiResponse(responseCode = "404", description = "Contact not found", content = @Content) })
 
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	@DeleteMapping("/{id}")
+	@DeleteMapping("/{contactId}")
 	public ResponseEntity<String> deleteContact(
-			@Parameter(description = "Provide a contact id", required = true) @PathVariable Long id) {
+			@Parameter(description = "Provide a contact id", required = true) @PathVariable Long contactId) {
 
-		String response = contactService.deleteContact(id);
+		String response = contactService.deleteContact(contactId);
 
 		return new ResponseEntity<String>(response, HttpStatus.OK);
 
