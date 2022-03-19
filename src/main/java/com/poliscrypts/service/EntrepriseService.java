@@ -34,12 +34,12 @@ public class EntrepriseService {
 
 	public EntrepriseDto updateEntreprise(Long id, EntrepriseDto entrepriseDto) {
 
-		Entreprise oldEntreprise = entrepriseRepository.findById(id)
+		entrepriseRepository.findById(id)
 				.orElseThrow(() -> new EntityNotFoundException("Impossible to update entreprise with id " + id));
 
 		Entreprise entreprise = mapDtoToEntity(entrepriseDto);
 
-		entreprise.setId(oldEntreprise.getId());
+		entreprise.setId(id);
 
 		return mapEntityToDto(entrepriseRepository.save(entreprise));
 	}

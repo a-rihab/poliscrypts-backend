@@ -42,12 +42,12 @@ public class ContactService {
 
 	public ContactDto updateContact(Long id, ContactDto contactDto) {
 
-		Contact oldContact = contactRepository.findById(id)
+		contactRepository.findById(id)
 				.orElseThrow(() -> new EntityNotFoundException("Impossible to update this contact with id " + id));
 
 		Contact contact = mapDtoToEntity(contactDto);
 
-		contact.setId(oldContact.getId());
+		contact.setId(id);
 
 		Set<Entreprise> entreprises = contact.getEntreprises();
 		if (entreprises != null) {
