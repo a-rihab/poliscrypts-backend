@@ -95,7 +95,7 @@ public class EntrepriseService {
 
 		entrepriseRepository.delete(entreprise);
 
-		return "Entreprise with id " + id + " has been deleting succussfully";
+		return "Entreprise with id " + id + " has been deleted succussfully";
 	}
 
 	EntrepriseDto mapEntityToDto(Entreprise entreprise) {

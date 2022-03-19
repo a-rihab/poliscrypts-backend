@@ -108,7 +108,7 @@ public class ContactService {
 
 		contactRepository.delete(contact);
 
-		return "Contact with id " + id + " has been deleting succussfully";
+		return "Contact with id " + id + " has been deleted succussfully";
 
 	}
 
