@@ -46,12 +46,10 @@ public class EntrepriseService {
 
 	public PageContent<EntrepriseDto> getAllEntreprises(Integer page, Integer limit, String sort, String dir) {
 
-		Pageable paging = null;
+		Sort _sort = dir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sort).ascending()
+				: Sort.by(sort).descending();
 
-		if (dir.equals("asc"))
-			paging = PageRequest.of(page, limit, Sort.by(sort).ascending());
-		else
-			paging = PageRequest.of(page, limit, Sort.by(sort).descending());
+		Pageable paging = PageRequest.of(page, limit, _sort);
 
 		Page<Entreprise> entreprises = entrepriseRepository.findAll(paging);
 
@@ -65,12 +63,10 @@ public class EntrepriseService {
 	public PageContent<EntrepriseDto> findAllEntreprisesByAddress(String address, Integer page, Integer limit,
 			String sort, String dir) {
 
-		Pageable paging = null;
+		Sort _sort = dir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sort).ascending()
+				: Sort.by(sort).descending();
 
-		if (dir.equals("asc"))
-			paging = PageRequest.of(page, limit, Sort.by(sort).ascending());
-		else
-			paging = PageRequest.of(page, limit, Sort.by(sort).descending());
+		Pageable paging = PageRequest.of(page, limit, _sort);
 
 		Page<Entreprise> entreprises = entrepriseRepository.findByAddressContainingIgnoreCase(address, paging);
 
