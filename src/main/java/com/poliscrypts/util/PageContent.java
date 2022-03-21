@@ -3,11 +3,13 @@ package com.poliscrypts.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Setter
-@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
 public class PageContent<T> {
 	private List<T> content = new ArrayList<>();
 	private long totalElements = 0;

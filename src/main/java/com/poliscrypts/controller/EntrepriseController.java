@@ -21,11 +21,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.poliscrypts.dto.ContactDto;
-import com.poliscrypts.exception.GlobalException;
+import com.poliscrypts.dto.EntrepriseDto;
 import com.poliscrypts.exception.ValidationException;
-import com.poliscrypts.model.Contact;
-import com.poliscrypts.service.ContactService;
+import com.poliscrypts.model.Entreprise;
+import com.poliscrypts.service.EntrepriseService;
 import com.poliscrypts.util.PageContent;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -37,25 +36,25 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 @RestController
-@RequestMapping("/api/contact")
-public class ContactController {
+@RequestMapping("/api/entreprise")
+public class EntrepriseController {
 
 	@Autowired
-	private ContactService contactService;
+	private EntrepriseService entrepriseService;
 
-	@Operation(summary = "Create a contact")
+	@Operation(summary = "Create a entreprise")
 	@ApiResponses(value = {
-			@ApiResponse(responseCode = "201", description = "Contact has been created successfully !", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Contact.class))),
+			@ApiResponse(responseCode = "201", description = "Entreprise has been created successfully !", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Entreprise.class))),
 			@ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content) })
 
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	// @PreAuthorize("hasRole('ROLE_ADMIN')")
 	@PostMapping
-	public ResponseEntity<?> saveContact(
-			@Parameter(description = "Provide a contact payload", required = true) @Valid @RequestBody ContactDto contactDto,
+	public ResponseEntity<?> saveEntreprise(
+			@Parameter(description = "Provide a entreprise payload", required = true) @Valid @RequestBody EntrepriseDto entrepriseDto,
 			BindingResult results) {
 
 		Map<String, String> errors = new HashMap<>();
-		ContactDto savedContact = null;
+		EntrepriseDto savedEntreprise = null;
 
 		try {
 			if (results.hasErrors()) {
@@ -70,85 +69,84 @@ public class ContactController {
 
 			}
 
-			savedContact = contactService.createContact(contactDto);
+			savedEntreprise = entrepriseService.createEntreprise(entrepriseDto);
 
-		} catch (GlobalException ge) {
-			return new ResponseEntity<String>(ge.getMessage(), HttpStatus.BAD_REQUEST);
 		} catch (Exception e) {
 			return new ResponseEntity<Map<String, String>>(errors, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
-		return new ResponseEntity<ContactDto>(savedContact, HttpStatus.CREATED);
+		return new ResponseEntity<EntrepriseDto>(savedEntreprise, HttpStatus.CREATED);
 
 	}
 
-	@Operation(summary = "Get all contacts ")
-	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Retrieve all contacts", content = {
-			@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Contact.class))) }),
+	@Operation(summary = "Get all entreprises ")
+	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Retrieve all entreprises", content = {
+			@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Entreprise.class))) }),
 			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
 
 	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
 	@GetMapping
-	public ResponseEntity<PageContent<ContactDto>> getAllContacts(
+	public ResponseEntity<PageContent<EntrepriseDto>> getAllEntreprises(
 			@Parameter(description = "Provide a page number") @RequestParam(defaultValue = "0") Integer page,
 			@Parameter(description = "Provide a limit number") @RequestParam(defaultValue = "10") Integer limit,
 			@Parameter(description = "Provide a sort field") @RequestParam(defaultValue = "createDate") String sort,
 			@Parameter(description = "Provide a direction") @RequestParam(defaultValue = "desc") String dir) {
 
-		PageContent<ContactDto> pageDto = contactService.getAllContacs(page, limit, sort, dir);
-		return new ResponseEntity<PageContent<ContactDto>>(pageDto, HttpStatus.OK);
+		PageContent<EntrepriseDto> pageDto = entrepriseService.getAllEntreprises(page, limit, sort, dir);
+		return new ResponseEntity<PageContent<EntrepriseDto>>(pageDto, HttpStatus.OK);
 	}
 
-	@Operation(summary = "Get all contacts by search ")
-	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Retrieve all contacts", content = {
-			@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Contact.class))) }),
+	@Operation(summary = "Get all entreprises by address ")
+	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Retrieve all entreprises", content = {
+			@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Entreprise.class))) }),
 			@ApiResponse(responseCode = "500", description = "Internal Server Error") })
 
-	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+	// @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
 	@GetMapping("/search")
-	public ResponseEntity<PageContent<ContactDto>> getAllEntreprisesByAddress(
-			@Parameter(description = "Provide a searchWord") @RequestParam String searchWord,
+	public ResponseEntity<PageContent<EntrepriseDto>> getAllEntreprisesByAddress(
+			@Parameter(description = "Provide a address") @RequestParam String searchWord,
 			@Parameter(description = "Provide a page number") @RequestParam(defaultValue = "0") Integer page,
 			@Parameter(description = "Provide a limit number") @RequestParam(defaultValue = "10") Integer limit,
 			@Parameter(description = "Provide a sort field") @RequestParam(defaultValue = "createDate") String sort,
 			@Parameter(description = "Provide a direction") @RequestParam(defaultValue = "desc") String dir) {
 
-		PageContent<ContactDto> pageDto = contactService.findAllEntreprisesBySearch(searchWord, page, limit, sort, dir);
-		return new ResponseEntity<PageContent<ContactDto>>(pageDto, HttpStatus.OK);
+		PageContent<EntrepriseDto> pageDto = entrepriseService.findAllEntreprisesByAddress(searchWord, page, limit,
+				sort, dir);
+		return new ResponseEntity<PageContent<EntrepriseDto>>(pageDto, HttpStatus.OK);
 	}
 
-	@Operation(summary = "Get a contact by its id")
+	@Operation(summary = "Get a entreprise by its id")
 	@ApiResponses(value = {
-			@ApiResponse(responseCode = "200", description = "Found the contact", content = {
-					@Content(mediaType = "application/json", schema = @Schema(implementation = Contact.class)) }),
+			@ApiResponse(responseCode = "200", description = "Found the entreprise", content = {
+					@Content(mediaType = "application/json", schema = @Schema(implementation = Entreprise.class)) }),
 			@ApiResponse(responseCode = "400", description = "Invalid id supplied", content = @Content),
-			@ApiResponse(responseCode = "404", description = "Contact not found", content = @Content) })
+			@ApiResponse(responseCode = "404", description = "Entreprise not found", content = @Content) })
 
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@GetMapping("/{id}")
-	public ResponseEntity<ContactDto> getContactById(
-			@Parameter(description = "Provide a contact id", required = true) @PathVariable Long id) {
+	public ResponseEntity<EntrepriseDto> getEntrepriseById(
+			@Parameter(description = "Provide a entreprise id", required = true) @PathVariable Long id) {
 
-		ContactDto contactDto = contactService.findContactById(id);
-		return new ResponseEntity<ContactDto>(contactDto, HttpStatus.FOUND);
+		EntrepriseDto entrepriseDto = entrepriseService.findEntrepriseById(id);
+		return new ResponseEntity<EntrepriseDto>(entrepriseDto, HttpStatus.FOUND);
 	}
 
-	@Operation(summary = "Update a contact by its id")
+	@Operation(summary = "Update a entreprise by its id")
 	@ApiResponses(value = {
-			@ApiResponse(responseCode = "200", description = "Update the contact", content = {
-					@Content(mediaType = "application/json", schema = @Schema(implementation = Contact.class)) }),
+			@ApiResponse(responseCode = "200", description = "Update the entreprise", content = {
+					@Content(mediaType = "application/json", schema = @Schema(implementation = Entreprise.class)) }),
 			@ApiResponse(responseCode = "400", description = "Invalid id supplied", content = @Content),
-			@ApiResponse(responseCode = "404", description = "Contact not found", content = @Content) })
+			@ApiResponse(responseCode = "404", description = "Entreprise not found", content = @Content) })
 
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@PutMapping("/{id}")
-	public ResponseEntity<?> updateContact(
-			@Parameter(description = "Provide a payload of contact", required = true) @PathVariable Long id,
-			@Parameter(description = "Provide a contact id", required = true) @Valid @RequestBody ContactDto contactDto,
+	public ResponseEntity<?> updateEntreprise(
+			@Parameter(description = "Provide a entreprise id", required = true) @PathVariable Long id,
+			@Parameter(description = "Provide a entreprise id", required = true) @Valid @RequestBody EntrepriseDto entrepriseDto,
 			BindingResult results) {
 
 		Map<String, String> errors = new HashMap<>();
-		ContactDto updatedContactDto = null;
+		EntrepriseDto updatedEntreprise = null;
 
 		try {
 			if (results.hasErrors()) {
@@ -158,31 +156,34 @@ public class ContactController {
 					String errorMessage = error.getDefaultMessage();
 					errors.put(fieldName, errorMessage);
 				});
-				throw new ValidationException(errors);
-			}
-			updatedContactDto = contactService.updateContact(id, contactDto);
 
-		} catch (GlobalException ge) {
-			return new ResponseEntity<String>(ge.getMessage(), HttpStatus.BAD_REQUEST);
+				throw new ValidationException(errors);
+
+			}
+
+			updatedEntreprise = entrepriseService.updateEntreprise(id, entrepriseDto);
+
 		} catch (Exception e) {
 			return new ResponseEntity<Map<String, String>>(errors, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		return new ResponseEntity<ContactDto>(updatedContactDto, HttpStatus.OK);
+
+		return new ResponseEntity<EntrepriseDto>(updatedEntreprise, HttpStatus.OK);
+
 	}
 
-	@Operation(summary = "Delete a contact by its id")
+	@Operation(summary = "Delete a entreprise by its id")
 	@ApiResponses(value = {
-			@ApiResponse(responseCode = "200", description = "Delete the contact", content = {
-					@Content(mediaType = "application/json", schema = @Schema(implementation = Contact.class)) }),
+			@ApiResponse(responseCode = "200", description = "Delete the entreprise", content = {
+					@Content(mediaType = "application/json", schema = @Schema(implementation = Entreprise.class)) }),
 			@ApiResponse(responseCode = "400", description = "Invalid id supplied", content = @Content),
-			@ApiResponse(responseCode = "404", description = "Contact not found", content = @Content) })
+			@ApiResponse(responseCode = "404", description = "Entreprise not found", content = @Content) })
 
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@DeleteMapping("/{id}")
-	public ResponseEntity<String> deleteContact(
-			@Parameter(description = "Provide a contact id", required = true) @PathVariable Long id) {
+	public ResponseEntity<String> deleteEntreprise(
+			@Parameter(description = "Provide a entreprise id", required = true) @PathVariable Long id) {
 
-		String response = contactService.deleteContact(id);
+		String response = entrepriseService.deleteEntreprise(id);
 
 		return new ResponseEntity<String>(response, HttpStatus.OK);
 

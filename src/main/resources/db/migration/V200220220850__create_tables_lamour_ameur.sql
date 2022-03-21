@@ -1,8 +1,13 @@
+drop table if exists entreprise cascade;
+drop table if exists contact cascade;
+drop table if exists contact_entreprises cascade;
+drop table if exists user cascade;
+
 --
 -- Name: contact
 --
 
-CREATE TABLE contact (
+CREATE TABLE IF NOT EXISTS contact (
     id bigint NOT NULL AUTO_INCREMENT,
     first_name varchar(255) NOT NULL,
     last_name varchar(255) NOT NULL,
@@ -13,10 +18,10 @@ CREATE TABLE contact (
 );
 
 --
--- Name: enterprise
+-- Name: entreprise
 --
 
-CREATE TABLE enterprise(
+CREATE TABLE IF NOT EXISTS entreprise(
     id bigint NOT NULL AUTO_INCREMENT,
     address varchar(255) NOT NULL,
     tva int NOT NULL,
@@ -24,13 +29,13 @@ CREATE TABLE enterprise(
 );
 
 --
--- Name: contact_enterprises
+-- Name: contact_entreprises
 --
 
-CREATE TABLE contact_enterprises (
+CREATE TABLE IF NOT EXISTS contact_entreprises (
     contacts_id bigint NOT NULL,
-    enterprises_id  bigint NOT NULL,
-    PRIMARY KEY (contacts_id, enterprises_id)
+    entreprises_id  bigint NOT NULL,
+    PRIMARY KEY (contacts_id, entreprises_id)
 );
 
 --
@@ -47,7 +52,7 @@ CREATE TABLE IF NOT EXISTS user(
 );
 
 
-ALTER TABLE contact_enterprises
+ALTER TABLE contact_entreprises
     ADD CONSTRAINT fk_contact_id FOREIGN KEY (contacts_id) REFERENCES contact(id);
-ALTER TABLE contact_enterprises
-    ADD CONSTRAINT fk_enterprise_id FOREIGN KEY (enterprises_id) REFERENCES enterprise(id);
+ALTER TABLE contact_entreprises
+    ADD CONSTRAINT fk_entreprise_id FOREIGN KEY (entreprises_id) REFERENCES entreprise(id);

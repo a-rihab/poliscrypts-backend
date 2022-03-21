@@ -1,22 +1,9 @@
 package com.poliscrypts.service;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.JoinType;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -28,9 +15,9 @@ import com.poliscrypts.dto.ContactDto;
 import com.poliscrypts.exception.EntityNotFoundException;
 import com.poliscrypts.exception.GlobalException;
 import com.poliscrypts.model.Contact;
-import com.poliscrypts.model.Enterprise;
+import com.poliscrypts.model.Entreprise;
 import com.poliscrypts.repository.ContactRepository;
-import com.poliscrypts.repository.EnterpriseRepository;
+import com.poliscrypts.repository.EntrepriseRepository;
 import com.poliscrypts.util.PageContent;
 
 @Service
@@ -40,15 +27,12 @@ public class ContactService {
 	private ContactRepository contactRepository;
 
 	@Autowired
-	private EnterpriseRepository enterpriseRepository;
-
-	@PersistenceContext
-	private EntityManager entityManager;
+	private EntrepriseRepository entrepriseRepository;
 
 	public ContactDto createContact(ContactDto contactDto) {
 		Contact contact = mapDtoToEntity(contactDto);
-		Set<Enterprise> enterprises = contact.getEnterprises();
-		if (enterprises != null) {
+		List<Entreprise> entreprises = contact.getEntreprises();
+		if (entreprises != null) {
 
 		}
 
@@ -57,17 +41,17 @@ public class ContactService {
 
 	public ContactDto updateContact(Long id, ContactDto contactDto) {
 
-		contactRepository.findById(id)
+		Contact oldContact = contactRepository.findById(id)
 				.orElseThrow(() -> new EntityNotFoundException("Impossible to update this contact with id " + id));
 
 		Contact contact = mapDtoToEntity(contactDto);
 
-		contact.setId(id);
+		contact.setId(oldContact.getId());
 
-		Set<Enterprise> enterprises = contact.getEnterprises();
-		if (enterprises != null) {
-			enterprises.forEach(entreprise -> {
-				enterpriseRepository.findById(entreprise.getId()).orElseThrow(() -> new GlobalException(
+		List<Entreprise> entreprises = contact.getEntreprises();
+		if (entreprises != null) {
+			entreprises.forEach(entreprise -> {
+				entrepriseRepository.findById(entreprise.getId()).orElseThrow(() -> new GlobalException(
 						"Impossible to update a contact with entreprise id " + entreprise.getId()));
 			});
 		}
@@ -75,77 +59,39 @@ public class ContactService {
 		return mapEntityToDto(contactRepository.save(contact));
 	}
 
-	public PageContent<ContactDto> findBySearch(String searchWord, Integer page, Integer limit, String sort,
-			String dir) {
-
-		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-		CriteriaQuery<Contact> cq = cb.createQuery(Contact.class);
-		Root<Contact> root = cq.from(Contact.class);
-
-		PageContent<ContactDto> pageContent = new PageContent<ContactDto>();
-
-		Join<Contact, Enterprise> contactJoinEnterprise = root.join("enterprises", JoinType.LEFT);
-
-		if (dir.equalsIgnoreCase(Sort.Direction.ASC.name()))
-			cq.orderBy(cb.asc(root.get(sort)));
-		else
-			cq.orderBy(cb.desc(root.get(sort)));
-
-		List<Predicate> predicates = new ArrayList<>();
-
-		if (searchWord != null) {
-			predicates.add(
-					cb.like(cb.lower(root.get("firstName")), "%" + searchWord.toLowerCase().replace("'", "''") + "%"));
-
-			predicates.add(
-					cb.like(cb.lower(root.get("lastName")), "%" + searchWord.toLowerCase().replace("'", "''") + "%"));
-
-			predicates.add(
-					cb.like(cb.lower(root.get("address")), "%" + searchWord.toLowerCase().replace("'", "''") + "%"));
-
-			predicates
-					.add(cb.like(cb.lower(root.get("type")), "%" + searchWord.toLowerCase().replace("'", "''") + "%"));
-
-			if (StringUtils.isNumeric(searchWord))
-				predicates.add(cb.equal(root.get("tva"), searchWord.replace("'", "''")));
-
-			predicates.add(cb.like(cb.lower(contactJoinEnterprise.get("address")),
-					"%" + searchWord.toLowerCase().replace("'", "''") + "%"));
-
-		}
-
-		Predicate finalPredicate = cb.or(predicates.toArray(new Predicate[] {}));
-
-		TypedQuery<Contact> typedQuery = entityManager.createQuery(cq.select(root).where(finalPredicate));
-
-		int total = typedQuery.getResultList().size();
-
-		if (limit != -1)
-			typedQuery.setFirstResult(page * limit).setMaxResults(limit);
-
-		List<Contact> contacts = typedQuery.getResultList();
-
-		pageContent.setContent(mapEntitysToDtos(contacts));
-		pageContent.setTotalElements(total);
-
-		return pageContent;
-
-	}
-
 	public PageContent<ContactDto> getAllContacs(Integer page, Integer limit, String sort, String dir) {
 
-		PageContent<ContactDto> pageContent = new PageContent<ContactDto>();
+		Pageable paging = null;
 
-		if (limit == -1)
-			limit = enterpriseRepository.findAll().size();
-
-		Sort _sort = dir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sort).ascending()
-				: Sort.by(sort).descending();
-
-		Pageable paging = PageRequest.of(page, limit, _sort);
+		if (dir.equals("asc"))
+			paging = PageRequest.of(page, limit, Sort.by(sort).ascending());
+		else
+			paging = PageRequest.of(page, limit, Sort.by(sort).descending());
 
 		Page<Contact> contacts = contactRepository.findAll(paging);
 
+		PageContent<ContactDto> pageContent = new PageContent<ContactDto>();
+		pageContent.setContent(mapEntitysToDtos(contacts.getContent()));
+		pageContent.setTotalElements(contacts.getTotalElements());
+
+		return pageContent;
+	}
+
+	public PageContent<ContactDto> findAllEntreprisesBySearch(String search, Integer page, Integer limit, String sort,
+			String dir) {
+
+		Pageable paging = null;
+
+		if (dir.equals("asc"))
+			paging = PageRequest.of(page, limit, Sort.by(sort).ascending());
+		else
+			paging = PageRequest.of(page, limit, Sort.by(sort).descending());
+
+		Page<Contact> contacts = contactRepository
+				.findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCaseOrAddressContainingIgnoreCase(search,
+						search, search, paging);
+
+		PageContent<ContactDto> pageContent = new PageContent<ContactDto>();
 		pageContent.setContent(mapEntitysToDtos(contacts.getContent()));
 		pageContent.setTotalElements(contacts.getTotalElements());
 
@@ -165,7 +111,7 @@ public class ContactService {
 
 		contactRepository.delete(contact);
 
-		return "Contact with id " + id + " has been deleted succussfully";
+		return "Contact with id " + id + " has been deleting succussfully";
 
 	}
 
@@ -179,7 +125,7 @@ public class ContactService {
 		contactDto.setAddress(contact.getAddress());
 		contactDto.setTva(contact.getTva());
 		contactDto
-				.setEnterprises(contact.getEnterprises().stream().map(ent -> ent.getId()).collect(Collectors.toSet()));
+				.setEntreprises(contact.getEntreprises().stream().map(ent -> ent.getId()).collect(Collectors.toList()));
 
 		return contactDto;
 
@@ -194,16 +140,16 @@ public class ContactService {
 		contact.setType(contactDto.getType());
 		contact.setAddress(contactDto.getAddress());
 		contact.setTva(contactDto.getTva());
-		Set<Enterprise> enterprises = new HashSet<>();
+		List<Entreprise> entreprises = new ArrayList<>();
 
-		for (Long id : contactDto.getEnterprises()) {
-			Enterprise enterprise = enterpriseRepository.findById(id)
+		for (Long id : contactDto.getEntreprises()) {
+			Entreprise entreprise = entrepriseRepository.findById(id)
 					.orElseThrow(() -> new GlobalException("Impossible to create contact with entreprise id " + id));
 
-			enterprises.add(enterprise);
+			entreprises.add(entreprise);
 		}
 
-		contact.setEnterprises(enterprises);
+		contact.setEntreprises(entreprises);
 
 		return contact;
 

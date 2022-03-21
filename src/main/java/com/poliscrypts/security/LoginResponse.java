@@ -3,14 +3,12 @@ package com.poliscrypts.security;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
+@Data
 public class LoginResponse {
 	private String accessToken;
 	private String refreshToken;
