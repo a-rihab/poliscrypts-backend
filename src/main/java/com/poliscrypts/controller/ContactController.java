@@ -75,14 +75,14 @@ public class ContactController {
 
 	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
 	@GetMapping("/search")
-	public ResponseEntity<PageContent<ContactDto>> getAllEntreprisesByAddress(
+	public ResponseEntity<PageContent<ContactDto>> getAllContactsByAddress(
 			@Parameter(description = "Provide a searchWord") @RequestParam String searchWord,
 			@Parameter(description = "Provide a page number") @RequestParam(defaultValue = "0") Integer page,
 			@Parameter(description = "Provide a limit number") @RequestParam(defaultValue = "10") Integer limit,
 			@Parameter(description = "Provide a sort field") @RequestParam(defaultValue = "createDate") String sort,
 			@Parameter(description = "Provide a direction") @RequestParam(defaultValue = "desc") String dir) {
 
-		PageContent<ContactDto> pageDto = contactService.findAllEnterprisesBySearch(searchWord, page, limit, sort, dir);
+		PageContent<ContactDto> pageDto = contactService.findBySearch(searchWord, page, limit, sort, dir);
 		return new ResponseEntity<PageContent<ContactDto>>(pageDto, HttpStatus.OK);
 	}
 

@@ -77,14 +77,14 @@ public class EnterpriseController {
 
 	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
 	@GetMapping("/search")
-	public ResponseEntity<PageContent<EnterpriseDto>> getAllEnterprisesByAddress(
+	public ResponseEntity<PageContent<EnterpriseDto>> getAllEnterprisesBySearch(
 			@Parameter(description = "Provide a address") @RequestParam String searchWord,
 			@Parameter(description = "Provide a page number") @RequestParam(defaultValue = "0") Integer page,
 			@Parameter(description = "Provide a limit number") @RequestParam(defaultValue = "10") Integer limit,
 			@Parameter(description = "Provide a sort field") @RequestParam(defaultValue = "createDate") String sort,
 			@Parameter(description = "Provide a direction") @RequestParam(defaultValue = "desc") String dir) {
 
-		PageContent<EnterpriseDto> pageDto = enterpriseService.findAllEnterprisesByAddress(searchWord, page, limit,
+		PageContent<EnterpriseDto> pageDto = enterpriseService.findAllEnterprisesBySearch(searchWord, page, limit,
 				sort, dir);
 		return new ResponseEntity<PageContent<EnterpriseDto>>(pageDto, HttpStatus.OK);
 	}
