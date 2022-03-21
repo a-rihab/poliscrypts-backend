@@ -1,39 +1,32 @@
 package com.poliscrypts.dto;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.validation.constraints.NotBlank;
 
-import com.poliscrypts.util.ContactType;
+import lombok.Getter;
+import lombok.Setter;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-@NoArgsConstructor
-@AllArgsConstructor
-@Data
+@Setter
+@Getter
 public class ContactDto {
 
 	private Long id;
 
-	@NotBlank(message = "Veuillez saisir le nom !")
+	@NotBlank(message = "First name must not be empty !")
 	private String firstName;
 
-	@NotBlank(message = "Veuillez saisir le prénom !")
+	@NotBlank(message = "Last name must not be empty !")
 	private String lastName;
 
-	@NotBlank(message = "Veuillez saisir une address !")
+	@NotBlank(message = "Address must not be empty !")
 	private String address;
 
-	@Enumerated(EnumType.STRING)
-	private ContactType type;
+	private String type;
 
-	private int tva;
+	private Integer tva;
 
-	private List<Long> entreprises = new ArrayList<>();
+	private Set<Long> enterprises = new HashSet<>();
 
 }

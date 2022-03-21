@@ -9,6 +9,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor
 @Entity
 public class User {
 
@@ -24,8 +27,7 @@ public class User {
 
 	private String roles = "";
 
-	public User() {
-	}
+	
 
 	public User(String username, String password, String roles) {
 		this.username = username;

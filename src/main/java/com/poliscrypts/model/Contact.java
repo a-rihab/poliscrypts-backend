@@ -1,12 +1,10 @@
 package com.poliscrypts.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
@@ -16,15 +14,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 
-import com.poliscrypts.util.ContactType;
+import lombok.Getter;
+import lombok.Setter;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-@NoArgsConstructor
-@AllArgsConstructor
-@Data
+@Setter
+@Getter
 @Entity
 public class Contact {
 
@@ -40,15 +34,14 @@ public class Contact {
 
 	private String address;
 
-	@Enumerated(EnumType.STRING)
-	private ContactType type;
+	private String type;
 
-	private int tva;
+	private Integer tva;
 
 	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(name = "contact_entreprises", joinColumns = {
+	@JoinTable(name = "contact_enterprises", joinColumns = {
 			@JoinColumn(foreignKey = @ForeignKey(name = "fk_contact_id")) }, inverseJoinColumns = {
-					@JoinColumn(foreignKey = @ForeignKey(name = "fk_entreprise_id")) })
-	private List<Entreprise> entreprises = new ArrayList<>();
+					@JoinColumn(foreignKey = @ForeignKey(name = "fk_enterprise_id")) })
+	private Set<Enterprise> enterprises = new HashSet<>();
 
 }

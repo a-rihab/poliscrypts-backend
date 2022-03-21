@@ -1,7 +1,7 @@
 package com.poliscrypts.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,15 +9,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
-@NoArgsConstructor
-@AllArgsConstructor
-@Data
+@Setter
+@Getter
 @Entity
-public class Entreprise {
+public class Enterprise {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,8 +23,8 @@ public class Entreprise {
 
 	private String address;
 
-	private int tva;
+	private Integer tva;
 
-	@ManyToMany(mappedBy = "entreprises")
-	List<Contact> contacts = new ArrayList<>();
+	@ManyToMany(mappedBy = "enterprises")
+	Set<Contact> contacts = new HashSet<>();
 }
