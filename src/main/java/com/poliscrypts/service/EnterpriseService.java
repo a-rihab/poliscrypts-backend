@@ -2,7 +2,6 @@ package com.poliscrypts.service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -23,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import com.poliscrypts.dto.EnterpriseDto;
 import com.poliscrypts.exception.EntityNotFoundException;
+import com.poliscrypts.mapper.EnterpriseMapper;
 import com.poliscrypts.model.Contact;
 import com.poliscrypts.model.Enterprise;
 import com.poliscrypts.repository.EnterpriseRepository;
@@ -34,14 +34,17 @@ public class EnterpriseService {
 	@Autowired
 	private EnterpriseRepository enterpriseRepository;
 
+	@Autowired
+	private EnterpriseMapper enterpriseMapper;
+
 	@PersistenceContext
 	private EntityManager entityManager;
 
 	public EnterpriseDto createEnterprise(EnterpriseDto enterpriseDto) {
 
-		Enterprise enterprise = mapDtoToEntity(enterpriseDto);
+		Enterprise enterprise = enterpriseMapper.dtoToEntity(enterpriseDto);
 
-		return mapEntityToDto(enterpriseRepository.save(enterprise));
+		return enterpriseMapper.entityToDto(enterpriseRepository.save(enterprise));
 	}
 
 	public EnterpriseDto updateEnterprise(Long id, EnterpriseDto enterpriseDto) {
@@ -49,11 +52,11 @@ public class EnterpriseService {
 		enterpriseRepository.findById(id)
 				.orElseThrow(() -> new EntityNotFoundException("Impossible to update entreprise with id " + id));
 
-		Enterprise enterprise = mapDtoToEntity(enterpriseDto);
+		Enterprise enterprise = enterpriseMapper.dtoToEntity(enterpriseDto);
 
 		enterprise.setId(id);
 
-		return mapEntityToDto(enterpriseRepository.save(enterprise));
+		return enterpriseMapper.entityToDto(enterpriseRepository.save(enterprise));
 	}
 
 	public PageContent<EnterpriseDto> getAllEnterprises(Integer page, Integer limit, String sort, String dir) {
@@ -70,7 +73,7 @@ public class EnterpriseService {
 
 		Page<Enterprise> enterprises = enterpriseRepository.findAll(paging);
 
-		pageContent.setContent(mapEntitysToDtos(enterprises.getContent()));
+		pageContent.setContent(enterpriseMapper.entitysToDtos(enterprises.getContent()));
 		pageContent.setTotalElements(enterprises.getTotalElements());
 
 		return pageContent;
@@ -113,7 +116,7 @@ public class EnterpriseService {
 
 		List<Enterprise> enterprises = typedQuery.getResultList();
 
-		pageContent.setContent(mapEntitysToDtos(enterprises));
+		pageContent.setContent(enterpriseMapper.entitysToDtos(enterprises));
 		pageContent.setTotalElements(total);
 
 		return pageContent;
@@ -123,7 +126,7 @@ public class EnterpriseService {
 		Enterprise enterprise = enterpriseRepository.findById(id)
 				.orElseThrow(() -> new EntityNotFoundException("Enterprise not exist with id " + id));
 
-		return mapEntityToDto(enterprise);
+		return enterpriseMapper.entityToDto(enterprise);
 	}
 
 	@Transactional
@@ -138,34 +141,6 @@ public class EnterpriseService {
 		enterpriseRepository.delete(enterprise);
 
 		return "Enterprise with id " + id + " has been deleted succussfully";
-	}
-
-	EnterpriseDto mapEntityToDto(Enterprise enterprise) {
-
-		EnterpriseDto enterpriseDto = new EnterpriseDto();
-
-		enterpriseDto.setId(enterprise.getId());
-		enterpriseDto.setAddress(enterprise.getAddress());
-		enterpriseDto.setTva(enterprise.getTva());
-
-		return enterpriseDto;
-
-	}
-
-	Enterprise mapDtoToEntity(EnterpriseDto enterpriseDto) {
-
-		Enterprise enterprise = new Enterprise();
-		enterprise.setId(enterpriseDto.getId());
-		enterprise.setAddress(enterpriseDto.getAddress());
-		enterprise.setTva(enterpriseDto.getTva());
-
-		return enterprise;
-
-	}
-
-	public List<EnterpriseDto> mapEntitysToDtos(List<Enterprise> enterprises) {
-		return enterprises.stream().map(dto -> mapEntityToDto(dto)).filter(dto -> dto != null)
-				.collect(Collectors.toList());
 	}
 
 }

@@ -1,10 +1,8 @@
 package com.poliscrypts.service;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -27,6 +25,7 @@ import org.springframework.stereotype.Service;
 import com.poliscrypts.dto.ContactDto;
 import com.poliscrypts.exception.EntityNotFoundException;
 import com.poliscrypts.exception.GlobalException;
+import com.poliscrypts.mapper.ContactMapper;
 import com.poliscrypts.model.Contact;
 import com.poliscrypts.model.Enterprise;
 import com.poliscrypts.repository.ContactRepository;
@@ -42,17 +41,20 @@ public class ContactService {
 	@Autowired
 	private EnterpriseRepository enterpriseRepository;
 
+	@Autowired
+	private ContactMapper contactMapper;
+
 	@PersistenceContext
 	private EntityManager entityManager;
 
 	public ContactDto createContact(ContactDto contactDto) {
-		Contact contact = mapDtoToEntity(contactDto);
+		Contact contact = contactMapper.dtoToEntity(contactDto);
 		Set<Enterprise> enterprises = contact.getEnterprises();
 		if (enterprises != null) {
 
 		}
 
-		return mapEntityToDto(contactRepository.save(contact));
+		return contactMapper.entityToDto(contactRepository.save(contact));
 	}
 
 	public ContactDto updateContact(Long id, ContactDto contactDto) {
@@ -60,7 +62,7 @@ public class ContactService {
 		contactRepository.findById(id)
 				.orElseThrow(() -> new EntityNotFoundException("Impossible to update this contact with id " + id));
 
-		Contact contact = mapDtoToEntity(contactDto);
+		Contact contact = contactMapper.dtoToEntity(contactDto);
 
 		contact.setId(id);
 
@@ -72,7 +74,7 @@ public class ContactService {
 			});
 		}
 
-		return mapEntityToDto(contactRepository.save(contact));
+		return contactMapper.entityToDto(contactRepository.save(contact));
 	}
 
 	public PageContent<ContactDto> findBySearch(String searchWord, Integer page, Integer limit, String sort,
@@ -125,7 +127,7 @@ public class ContactService {
 
 		List<Contact> contacts = typedQuery.getResultList();
 
-		pageContent.setContent(mapEntitysToDtos(contacts));
+		pageContent.setContent(contactMapper.entitysToDtos(contacts));
 		pageContent.setTotalElements(total);
 
 		return pageContent;
@@ -146,7 +148,7 @@ public class ContactService {
 
 		Page<Contact> contacts = contactRepository.findAll(paging);
 
-		pageContent.setContent(mapEntitysToDtos(contacts.getContent()));
+		pageContent.setContent(contactMapper.entitysToDtos(contacts.getContent()));
 		pageContent.setTotalElements(contacts.getTotalElements());
 
 		return pageContent;
@@ -156,7 +158,7 @@ public class ContactService {
 		Contact contact = contactRepository.findById(id)
 				.orElseThrow(() -> new EntityNotFoundException("A Contact not exist with id " + id));
 
-		return mapEntityToDto(contact);
+		return contactMapper.entityToDto(contact);
 	}
 
 	public String deleteContact(Long id) {
@@ -167,51 +169,6 @@ public class ContactService {
 
 		return "Contact with id " + id + " has been deleted succussfully";
 
-	}
-
-	ContactDto mapEntityToDto(Contact contact) {
-
-		ContactDto contactDto = new ContactDto();
-		contactDto.setId(contact.getId());
-		contactDto.setFirstName(contact.getFirstName());
-		contactDto.setLastName(contact.getLastName());
-		contactDto.setType(contact.getType());
-		contactDto.setAddress(contact.getAddress());
-		contactDto.setTva(contact.getTva());
-		contactDto
-				.setEnterprises(contact.getEnterprises().stream().map(ent -> ent.getId()).collect(Collectors.toSet()));
-
-		return contactDto;
-
-	}
-
-	Contact mapDtoToEntity(ContactDto contactDto) {
-
-		Contact contact = new Contact();
-		contact.setId(contactDto.getId());
-		contact.setFirstName(contactDto.getFirstName());
-		contact.setLastName(contactDto.getLastName());
-		contact.setType(contactDto.getType());
-		contact.setAddress(contactDto.getAddress());
-		contact.setTva(contactDto.getTva());
-		Set<Enterprise> enterprises = new HashSet<>();
-
-		for (Long id : contactDto.getEnterprises()) {
-			Enterprise enterprise = enterpriseRepository.findById(id)
-					.orElseThrow(() -> new GlobalException("Impossible to create contact with entreprise id " + id));
-
-			enterprises.add(enterprise);
-		}
-
-		contact.setEnterprises(enterprises);
-
-		return contact;
-
-	}
-
-	public List<ContactDto> mapEntitysToDtos(List<Contact> contacts) {
-		return contacts.stream().map(dto -> mapEntityToDto(dto)).filter(dto -> dto != null)
-				.collect(Collectors.toList());
 	}
 
 }
