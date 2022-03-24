@@ -5,36 +5,20 @@ pipeline {
     }
     environment {
         DATE = new Date().format('yy.M')
-        TAG = "${DATE}.${BUILD_NUMBER}"
+        IMAGE_TAG = "${DATE}.${BUILD_NUMBER}"
     }
     stages {
         stage ('Build') {
             steps {
-                bat 'mvn clean package'
+                bat 'mvn clean install'
             }
         }
-        stage('Docker Build') {
-            steps {
-                script {
-                    docker.build("pearlcompany/poliscrypts-backimage:${TAG}")
-                }
-            }
-        }
-	    stage('Pushing Docker Image to Dockerhub') {
-            steps {
-                script {
-                    docker.withRegistry('https://registry.hub.docker.com', 'docker-hub') {
-                        docker.image("pearlcompany/poliscrypts-backimage:${TAG}").push()
-                        docker.image("pearlcompany/poliscrypts-backimage:${TAG}").push("latest")
-                    }
-                }
-            }
-        }
+        
         stage('Deploy'){
             steps {
-                bat "docker stop poliscrypts-backimage | true"
-                bat "docker rm poliscrypts-backimage | true"
-                bat "docker run --name poliscrypts-backimage -d -p 9090:9090 pearlcompany/poliscrypts-backimage:${TAG}"
+		bat 'docker build -t ${IMAGE_TAG} .'
+                bat 'docker stop poliback && docker rm poliback || true'
+                bat 'docker run --name poliback -d -p 9090:9090 ${IMAGE_TAG}'
             }
         }
     }
